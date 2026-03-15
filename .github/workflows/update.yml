@@ -1,0 +1,136 @@
+name: Monthly Update
+
+on:
+  schedule:
+    - cron: '0 0 1 * *'  # 毎月1日 AM9:00 JST
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install yt-dlp
+        run: pip install yt-dlp
+
+      - name: Get existing video IDs per channel
+        run: |
+          for dir in */; do
+            [ "$dir" = ".github/" ] && continue
+            ch=$(basename "$dir")
+            grep -ohP 'watch\?v=\K[^) |]+' "$dir"*.md 2>/dev/null | sort -u > "/tmp/existing_${ch}.txt"
+          done
+
+      - name: Fetch and convert new videos
+        run: |
+          CHANNELS='8co28 AkiyamaYuta SHIFT-AI_kiuchiAI ai-saborou aibujp chatGPT-bz4sj cooker8 dxschool googleworkspacejapan ipachannel keitoaiweb nemotakuAI ni-work notionjapan oikon48 takmu'
+
+          for ch in $CHANNELS; do
+            echo "=== Processing: $ch ==="
+            mkdir -p "subs_tmp/$ch"
+
+            yt-dlp --flat-playlist --print id \
+              "https://www.youtube.com/@${ch}/videos" > "/tmp/all_${ch}.txt" 2>/dev/null || true
+
+            if [ ! -f "/tmp/existing_${ch}.txt" ]; then
+              touch "/tmp/existing_${ch}.txt"
+            fi
+
+            comm -23 <(sort "/tmp/all_${ch}.txt") "/tmp/existing_${ch}.txt" > "/tmp/new_${ch}.txt"
+            NEW_COUNT=$(wc -l < "/tmp/new_${ch}.txt" | tr -d ' ')
+            echo "  New videos: $NEW_COUNT"
+
+            if [ "$NEW_COUNT" -gt 0 ]; then
+              while IFS= read -r vid; do
+                yt-dlp --write-auto-subs --sub-lang "ja-orig,ja" --sub-format srt \
+                  --write-info-json --skip-download --no-overwrites \
+                  -o "subs_tmp/$ch/%(id)s" \
+                  "https://www.youtube.com/watch?v=${vid}" 2>/dev/null || true
+              done < "/tmp/new_${ch}.txt"
+            fi
+          done
+
+      - name: Convert to Markdown
+        run: |
+          python3 << 'PYEOF'
+          import json, os, re
+          from datetime import datetime
+          from pathlib import Path
+
+          SUBS = Path("subs_tmp")
+          count = 0
+          for ch_dir in sorted(SUBS.iterdir()):
+              if not ch_dir.is_dir(): continue
+              ch_id = ch_dir.name
+              out = Path(ch_id)
+              out.mkdir(exist_ok=True)
+              for jf in ch_dir.glob("*.info.json"):
+                  vid = jf.stem.replace(".info","")
+                  try:
+                      info = json.loads(jf.read_text())
+                  except: continue
+                  if info.get("_type")=="playlist": continue
+                  title = info.get("title",vid)
+                  ud = info.get("upload_date","")
+                  desc = info.get("description","")
+                  dur = info.get("duration",0)
+                  vc = info.get("view_count",0)
+                  cn = info.get("channel",ch_id)
+                  url = f"https://www.youtube.com/watch?v={vid}"
+                  ds,df = "",""
+                  if ud:
+                      try:
+                          dt=datetime.strptime(ud,"%Y%m%d")
+                          ds=dt.strftime("%Y年%m月%d日")
+                          df=dt.strftime("%Y-%m-%d")
+                      except: ds,df=ud,ud
+                  st=""
+                  for p in [f"{vid}.ja-orig.srt",f"{vid}.ja.srt"]:
+                      sp=ch_dir/p
+                      if sp.exists():
+                          raw=sp.read_text()
+                          blocks=re.split(r"\n\n+",raw.strip())
+                          texts=[]
+                          for b in blocks:
+                              tl=[]
+                              for l in b.strip().splitlines():
+                                  l=l.strip()
+                                  if not l or re.match(r"^\d+$",l) or re.match(r"\d{2}:\d{2}:\d{2}",l): continue
+                                  l=re.sub(r"<[^>]+>","",l).strip()
+                                  if l: tl.append(l)
+                              if tl: texts.append(" ".join(tl))
+                          r=[texts[0]] if texts else []
+                          for i in range(1,len(texts)):
+                              if texts[i]!=r[-1]: r.append(texts[i])
+                          st="\n".join(r)
+                          break
+                  if not st: st="（字幕データなし）"
+                  sf=re.sub(r'[\\/:*?"<>|]','',title)
+                  sf=re.sub(r'\s+',' ',sf).strip()[:100]
+                  fn=f"{df}_{sf}.md" if df else f"{sf}.md"
+                  h,m,s=dur//3600,(dur%3600)//60,dur%60
+                  ds2=f"{h}:{m:02d}:{s:02d}" if h>0 else f"{m}:{s:02d}" if dur else "不明"
+                  md=f"# {title}\n\n| 項目 | 内容 |\n|------|------|\n| **動画URL** | {url} |\n| **チャンネル** | {cn} |\n| **公開日** | {ds} |\n| **再生時間** | {ds2} |\n| **再生回数** | {vc:,} |\n\n## 概要\n{desc}\n\n---\n\n## 文字起こし\n\n{st}\n"
+                  (out/fn).write_text(md)
+                  count+=1
+          print(f"Converted {count} new videos")
+          PYEOF
+
+      - name: Cleanup and commit
+        run: |
+          rm -rf subs_tmp /tmp/existing_* /tmp/all_* /tmp/new_*
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No new videos"
+          else
+            COUNT=$(git diff --cached --name-only -- '*.md' | grep -v README | wc -l)
+            git commit -m "auto: ${COUNT}本の新しい動画の文字起こしを追加"
+            git push
+          fi
