@@ -31,4 +31,6 @@ Follow Google Workspace on Threads → https://goo.gle/3DEkmv6
 
 ## 文字起こし
 
-（字幕データなし）
+Aviation is a really time-sensitive business, so Google Workspace allows us to be agile, collaborative, and move fast at the pace of our business.And Gemini for Google Workspace is an incredible time-saver.I'm Lee Gold, Chief of Staff at Blade.And I'm Zoe Bezos, and I'm on the marketing team here.No company flies more people in and out of city centers than Blade.
+We are committed to reducing travel friction by enabling cost-effective air transportation alternatives.We are also proud to be the largest dedicated transporter of human organs for transplant in the United States.Google Workspace is mission critical to our business here at Blade, whether it's transporting passengers or transporting doctors and organs transcontinently.It's really important that we all stay updated in real time and have the ability to access critical information.
+Gemini for Google Workspaceは、モナコの子供たちとコピー・コラボレーションすることで、翻訳に失わないことを確保しています。Google Workspaceは、フライヤーからの素晴らしい経験を与えてくれます。彼らの必要性に対応し、彼らの旅の歩道を楽しめることを確保しています。

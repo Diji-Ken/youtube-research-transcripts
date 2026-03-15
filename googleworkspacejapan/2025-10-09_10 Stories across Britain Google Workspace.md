@@ -2,14 +2,14 @@
 
 | 項目 | 内容 |
 |------|------|
-| **動画URL** | https://www.youtube.com/watch?v=w5TsRXmn4Xc |
+| **動画URL** | https://www.youtube.com/watch?v=Fxwsbe2wra8 |
 | **チャンネル** | Google Workspace |
 | **公開日** | 2025年10月09日 |
-| **再生時間** | 0:06 |
-| **再生回数** | 7,438,205 |
+| **再生時間** | 0:15 |
+| **再生回数** | 14,707,423 |
 
 ## 概要
-Small businesses across Great Britian are using Google Workspace with Gemini to do their best work. Learn how Google AI is empowering businesses to focus on their passion and thrive.
+Small businesses across Great Britain are using Google Workspace with Gemini to do their best work. Learn how Google AI is empowering businesses to focus on their passion and thrive.
 
 Try Google Workspace with Gemini → http://goo.gle/3TNuJl8
 What is Google Workspace → http://goo.gle/4kh3r1o

@@ -36,4 +36,9 @@ Follow Google Workspace on Threads → https://goo.gle/3DEkmv6
 
 ## 文字起こし
 
-（字幕データなし）
+メディテックは高規模な企業であるので、安全性が最高に必要です。私の名前はキャンベリー・ハンソンです。私はメディテックのコーポレートテクノロジーのマネージャーです。メディテックは、ヘルスケア・オーガニザーションを提供する、完全にインテグレート・EHR、エンタープライズ・ヘルス・レコードのソリューションを提供しています。2012年、メディテックは、クラウドベースソリューションに移行し、Googleワークスペースに移行しました。
+We are in a highly regulated healthcare environment,and knowing that we could onboard Gemini for Google Workspaceand keep with our BAA and compliant with that,it was a no-brainer.The security that's offered in Gemini enhances what already exists in Google Workspace.
+私たちは、企業としての要望と企業の要望を 確認することができるようにしています。
+メディテックの各チームは、大量のデータを摂取することが大切です。健康管理について読み取る必要があります。それらの情報を私たちの商品やお客様に支援するために、インターネットで使用することができます。
+Gemini for Workspaceで、そのドキュメントだけで 重要な文章を記載することができることは、1週間の時間を稼ぐことができます。試験の終わりによって、参加者全員が7週間のプロダクティビティを 稼ぐことができました。
+私が予想するトリックルダウンエフェクトは、私たちの商品を開発し、お客様を支援し、実際の仕事に参加することです。これによって、仕事の満足度が高く、彼らの仕事の重要な部分に集中し、私たちはGenerative AIを支援することができます。

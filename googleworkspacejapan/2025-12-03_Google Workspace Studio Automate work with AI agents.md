@@ -2,16 +2,16 @@
 
 | 項目 | 内容 |
 |------|------|
-| **動画URL** | https://www.youtube.com/watch?v=Xy0r5fKwlVo |
+| **動画URL** | https://www.youtube.com/watch?v=QBPf5Myq2UU |
 | **チャンネル** | Google Workspace |
 | **公開日** | 2025年12月03日 |
-| **再生時間** | 1:24 |
-| **再生回数** | 122,653 |
+| **再生時間** | 0:15 |
+| **再生回数** | 10,121 |
 
 ## 概要
-"Google Workspace Studio is the place to create, manage, and share AI agents in Google Workspace. Build agents in minutes to automate everyday work, from simple tasks to complex workflows—no technical skills required.
+Build agents in minutes to automate everyday work, from simple tasks to complex workflows—no technical skills required.
 
-Try Google Workspace Studio → https://workspace.google.com/studio
+Try Google Workspace Studio → https://workspace.google.com/studio/
 Try Google Workspace with Gemini → http://goo.gle/42sSRyt
 
 What is Google Workspace → http://goo.gle/4nDoIVq
@@ -28,7 +28,7 @@ Follow Google Workspace on TikTok → http://goo.gle/4h7VknV
 Follow Google Workspace on Threads → http://goo.gle/46Zfjk8
 
 #GoogleWorkspace 
-#GoogleWorkspaceWithGemini"
+#GoogleWorkspaceWithGemini
 
 ---
 
