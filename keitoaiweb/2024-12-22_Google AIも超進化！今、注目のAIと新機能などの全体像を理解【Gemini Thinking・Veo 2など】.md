@@ -6,7 +6,7 @@
 | **チャンネル** | KEITO【AI&WEB ch】 |
 | **公開日** | 2024年12月22日 |
 | **再生時間** | 24:16 |
-| **再生回数** | 16,512 |
+| **再生回数** | 16,515 |
 
 ## 概要
 今回はGoogleが12月に発表した最新AIアップデートを解説！Gemini 2.0 Flash思考モード、Deep Research、Agentspace、NotebookLM Plus、Project Astra、Project Mariner、Jules、クリエイティブAI、量子WILLOWなど大注目のポイントを総まとめ。ビジネス活用に必見です！

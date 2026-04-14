@@ -6,7 +6,7 @@
 | **チャンネル** | しまぶーのIT大学 |
 | **公開日** | 2021年11月19日 |
 | **再生時間** | 16:38 |
-| **再生回数** | 37,312 |
+| **再生回数** | 37,355 |
 
 ## 概要
 拡張機能: https://chrome.google.com/webstore/detail/save-to-notion/ldmmifpegigmeammaeckplhnjbbpccmm

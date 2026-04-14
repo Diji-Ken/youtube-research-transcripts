@@ -6,7 +6,7 @@
 | **チャンネル** | IPA Channel |
 | **公開日** | 2023年03月14日 |
 | **再生時間** | 1:32 |
-| **再生回数** | 1,072 |
+| **再生回数** | 1,089 |
 
 ## 概要
 ITPEC Examination is a common IT examination conducted in the Philippines, Thailand, Vietnam, Myanmar, Mongolia, and Bangladesh. It enables to verify the competence of IT engineer with common criteria in the Asian region.

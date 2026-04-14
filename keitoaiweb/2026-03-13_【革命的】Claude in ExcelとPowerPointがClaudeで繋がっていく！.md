@@ -6,7 +6,7 @@
 | **チャンネル** | KEITO【AI&WEB ch】 |
 | **公開日** | 2026年03月13日 |
 | **再生時間** | 15:53 |
-| **再生回数** | 5,904 |
+| **再生回数** | 9,735 |
 
 ## 概要
 凄いな。Claude for ExcelとClaude in PowerPointがつながりました。Excelでの作業をそのままPowerPointで引き継げます。

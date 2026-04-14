@@ -6,7 +6,7 @@
 | **チャンネル** | KEITO【AI&WEB ch】 |
 | **公開日** | 2025年05月02日 |
 | **再生時間** | 22:23 |
-| **再生回数** | 12,514 |
+| **再生回数** | 12,535 |
 
 ## 概要
 Claudeが大幅進化！MaxプランでMCP簡単導入機能（Integrations）やDeepResearch系の新機能『Advanced Research』が追加。MCPの簡単導入方法とAdvanced Researchの使い方を解説します。

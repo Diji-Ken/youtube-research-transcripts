@@ -6,7 +6,7 @@
 | **チャンネル** | KEITO【AI&WEB ch】 |
 | **公開日** | 2025年02月11日 |
 | **再生時間** | 24:56 |
-| **再生回数** | 29,345 |
+| **再生回数** | 29,359 |
 
 ## 概要
 ChatGPT Deep ResearchとGemini Deep Research、Gensparkディープリサーチを使ってNotebookLMでノートを作成するのが結構良かったので解説。今後、個人的に使っていきます。

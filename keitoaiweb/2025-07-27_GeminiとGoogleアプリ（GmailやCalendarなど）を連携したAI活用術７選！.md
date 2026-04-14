@@ -6,7 +6,7 @@
 | **チャンネル** | KEITO【AI&WEB ch】 |
 | **公開日** | 2025年07月27日 |
 | **再生時間** | 23:41 |
-| **再生回数** | 20,590 |
+| **再生回数** | 20,724 |
 
 ## 概要
 Googleの生成AI「Gemini」とGoogleアプリを連携させたAI活用術を7つご紹介！Gmail、Googleドライブ、Googleカレンダー、Google Meet、Google ToDoリスト、Googleマップ、YouTubeといったGoogleサービスとGeminiを連携させることで、業務効率を飛躍的に向上させる方法を具体的に解説します。

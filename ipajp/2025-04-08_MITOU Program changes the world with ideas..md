@@ -6,7 +6,7 @@
 | **チャンネル** | IPA Channel |
 | **公開日** | 2025年04月08日 |
 | **再生時間** | 3:33 |
-| **再生回数** | 134 |
+| **再生回数** | 138 |
 
 ## 概要
 The MITOU Program is a national project to discover and develop outstanding IT talents, which has been continuously implemented and operated by IPA（Information-technology Promotion Agency, Japan） since 2000.
