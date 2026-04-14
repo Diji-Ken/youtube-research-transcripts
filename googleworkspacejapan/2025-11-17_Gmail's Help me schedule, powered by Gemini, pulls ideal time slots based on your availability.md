@@ -6,7 +6,7 @@
 | **チャンネル** | Google Workspace |
 | **公開日** | 2025年11月17日 |
 | **再生時間** | 0:13 |
-| **再生回数** | 5,146 |
+| **再生回数** | 5,285 |
 
 ## 概要
 Try Gmail for yourself → https://goo.gle/4gSUv24

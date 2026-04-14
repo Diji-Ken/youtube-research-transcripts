@@ -6,7 +6,7 @@
 | **チャンネル** | Google Workspace |
 | **公開日** | 2025年04月09日 |
 | **再生時間** | 0:12 |
-| **再生回数** | 5,829 |
+| **再生回数** | 5,834 |
 
 ## 概要
 We're giving everyone access to an on-demand analyst, available 24/7, by building Help me analyze in Google Sheets. This on-demand analyst provides guidance to get you started, points out interesting trends you might have missed, suggests next steps for digging deeper, and creates clear, interactive charts to bring your data to life. This makes powerful analysis accessible to your entire team, spreadsheet expert or not. Help me analyze is coming to Sheets later this year.

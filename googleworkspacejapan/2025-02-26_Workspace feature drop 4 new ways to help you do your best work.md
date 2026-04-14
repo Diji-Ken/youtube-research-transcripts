@@ -6,7 +6,7 @@
 | **チャンネル** | Google Workspace |
 | **公開日** | 2025年02月26日 |
 | **再生時間** | 0:58 |
-| **再生回数** | 14,192 |
+| **再生回数** | 14,390 |
 
 ## 概要
 Make research a snap with the latest Google Workspace feature drops! AI-powered insights in Sheets, NotebookLM as a core service, Deep Research in Gemini, and searchable video transcripts in Drive. To learn more about these feature drops check out → https://goo.gle/41Be21i

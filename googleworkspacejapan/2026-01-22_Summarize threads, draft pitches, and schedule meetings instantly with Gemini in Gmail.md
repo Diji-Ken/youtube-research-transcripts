@@ -6,7 +6,7 @@
 | **チャンネル** | Google Workspace |
 | **公開日** | 2026年01月22日 |
 | **再生時間** | 2:37 |
-| **再生回数** | 2,397 |
+| **再生回数** | 4,849 |
 
 ## 概要
 In this video, you'll learn to master client communication in Gmail using Gemini. Master the art of summarizing long threads, generating perfect sales pitches, and scheduling next steps instantly to keep your deals moving forward.
@@ -80,12 +80,12 @@ Geminiは会話全体を瞬時にスキャンし、
 販売サイクルを加速させるには、まず
 状況を即座に把握することが重要です。 要約機能を使えば、
 長いメールのやり取りを数秒で理解できます
-。  Second, craft the perfect
-message.  Geminiを使えば、必要な詳細情報を含む充実した下書きを簡単に作成できます
+。 第二に、完璧なメッセージを作成する
+。  Geminiを使えば、必要な詳細情報を含む充実した下書きを簡単に作成できます
 。 そして3つ目は、Gmailから離れることなく次のステップをスケジュールすることです
 。 カレンダーに追加機能を使って
 会議の予定を確定し、
 商談をスムーズに進めましょう。 さあ、始めましょうか
 ？ 今度はあなたの番です。
 チャレンジをクリアしてバッジを獲得しよう。   ご
-視聴ありがとうございました。楽しんでください。
+視聴ありがとうございました。楽しんでくださいね。

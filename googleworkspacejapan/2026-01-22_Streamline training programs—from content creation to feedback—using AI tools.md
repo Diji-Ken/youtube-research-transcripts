@@ -6,7 +6,7 @@
 | **チャンネル** | Google Workspace |
 | **公開日** | 2026年01月22日 |
 | **再生時間** | 3:29 |
-| **再生回数** | 1,199 |
+| **再生回数** | 1,401 |
 
 ## 概要
 In this video, you'll learn to integrate AI into every stage of a training program. Master the art of using NotebookLM for content development, Gemini Gems for routine drafting, and Google Workspace tools to facilitate sessions and analyze impact efficiently.

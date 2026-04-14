@@ -6,7 +6,7 @@
 | **チャンネル** | Google Workspace |
 | **公開日** | 2026年02月04日 |
 | **再生時間** | 2:56 |
-| **再生回数** | 4,737 |
+| **再生回数** | 7,307 |
 
 ## 概要
 In this video, you'll learn to use the NotebookLM mobile app to capture and synthesize information on the go. Master the art of saving sources via the share sheet, listening to personalized audio summaries offline, and interacting with your insights using your voice.

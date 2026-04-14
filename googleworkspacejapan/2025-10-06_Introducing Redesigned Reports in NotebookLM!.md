@@ -6,7 +6,7 @@
 | **チャンネル** | Google Workspace |
 | **公開日** | 2025年10月06日 |
 | **再生時間** | 0:48 |
-| **再生回数** | 8,562 |
+| **再生回数** | 8,775 |
 
 ## 概要
 NotebookLM dynamically suggests the perfect report format based on your sources. Get glossaries from planning docs or detailed critiques from campaign briefs, suggested automatically. It’s insights, smarter. 

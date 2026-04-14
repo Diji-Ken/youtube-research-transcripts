@@ -6,7 +6,7 @@
 | **チャンネル** | Google Workspace |
 | **公開日** | 2026年02月11日 |
 | **再生時間** | 3:16 |
-| **再生回数** | 921 |
+| **再生回数** | 1,221 |
 
 ## 概要
 Meet Candice Erasmus, Education and Change Mangement Lead for Digicloud Africa. She reduces cognitive load by using Gemini as a ""secoond brain,"" freeing her up to focus on content depth and creativity. Learn how custom Gems in Gemini can transform your workflow.
@@ -37,7 +37,7 @@ Googleが
 正直言って、私にとっては素晴らしい経験でした。
 [鼻を鳴らす] Geminiでカスタムgemを作成することで、
 特に
-イネーブルメントやトレーニングセッションを作成する私のような人間にとっては、信じられないほどの時間の節約になりました。
+イネーブルメントやトレーニングセッションを作成する私のような人間にとって、信じられないほどの時間の節約になりました。
 研修
 や能力開発セッションで
 プレゼンテーションを行う必要があるときはいつでも、エベレストとチャットをしています。 以前は、

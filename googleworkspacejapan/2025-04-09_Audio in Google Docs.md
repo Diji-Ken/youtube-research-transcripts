@@ -6,7 +6,7 @@
 | **チャンネル** | Google Workspace |
 | **公開日** | 2025年04月09日 |
 | **再生時間** | 0:15 |
-| **再生回数** | 16,312 |
+| **再生回数** | 16,636 |
 
 ## 概要
 Inspired by the popularity of audio overviews in NotebookLM, we're bringing audio capabilities directly into Google Docs. Soon, you'll be able to create full audio versions of your documents or choose podcast-style overviews for the key highlights. It’s a completely new way to interact with your content, and these audio experiences will be available in alpha in the coming weeks.

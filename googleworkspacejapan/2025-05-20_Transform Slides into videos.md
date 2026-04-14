@@ -6,7 +6,7 @@
 | **チャンネル** | Google Workspace |
 | **公開日** | 2025年05月20日 |
 | **再生時間** | 0:43 |
-| **再生回数** | 5,897 |
+| **再生回数** | 5,919 |
 
 ## 概要
 Transform static Google Slides presentations into dynamic videos with suggested scripts, AI voiceovers, animations and more. 

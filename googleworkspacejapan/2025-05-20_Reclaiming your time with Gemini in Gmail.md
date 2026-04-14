@@ -6,7 +6,7 @@
 | **チャンネル** | Google Workspace |
 | **公開日** | 2025年05月20日 |
 | **再生時間** | 1:08 |
-| **再生回数** | 8,242 |
+| **再生回数** | 8,350 |
 
 ## 概要
 Reclaim your time with Gemini in Gmail! Discover how you can boost your productivity and streamline your inbox with the help of AI: 

@@ -6,7 +6,7 @@
 | **チャンネル** | Google Workspace |
 | **公開日** | 2025年06月02日 |
 | **再生時間** | 1:30 |
-| **再生回数** | 2,065 |
+| **再生回数** | 2,106 |
 
 ## 概要
 Das Beste von Google AI, nahtlos in jeden Arbeitsalltag integriert.

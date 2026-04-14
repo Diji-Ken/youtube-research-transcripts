@@ -6,7 +6,7 @@
 | **チャンネル** | Google Workspace |
 | **公開日** | 2025年04月10日 |
 | **再生時間** | 0:11 |
-| **再生回数** | 4,623 |
+| **再生回数** | 4,809 |
 
 ## 概要
 Simply type @gemini in any Chat conversation, and it can provide a detailed summary, highlighting open questions, key decisions, and next steps. It's a simple way to cut through the noise and ensure everyone is aligned and the team keeps moving forward. This will be available in Labs in the coming weeks.

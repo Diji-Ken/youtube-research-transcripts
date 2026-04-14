@@ -6,7 +6,7 @@
 | **チャンネル** | Google Workspace |
 | **公開日** | 2025年04月09日 |
 | **再生時間** | 0:15 |
-| **再生回数** | 4,440 |
+| **再生回数** | 4,498 |
 
 ## 概要
 Help me refine in Docs aims to be more than just a text generator – it's like having a writing coach by your side. Instead of just rewriting sentences, it offers thoughtful suggestions on how to strengthen your argument, improve the structure of your piece, or make your key points clearer. It can also help with formatting consistency. The goal isn't just to fix the document, but to help you become a more effective communicator over time. Help me refine in Docs will be available in alpha soon.

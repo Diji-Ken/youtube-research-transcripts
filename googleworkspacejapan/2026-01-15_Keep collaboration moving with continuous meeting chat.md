@@ -6,7 +6,7 @@
 | **チャンネル** | Google Workspace |
 | **公開日** | 2026年01月15日 |
 | **再生時間** | 0:28 |
-| **再生回数** | 1,613 |
+| **再生回数** | 1,692 |
 
 ## 概要
 Continuous meeting chat automatically links your Meet conversation and shared files to a persistent Google Chat space. Your team can easily reference every detail, maintain full context, and ensure decisions translate into actionable next steps.

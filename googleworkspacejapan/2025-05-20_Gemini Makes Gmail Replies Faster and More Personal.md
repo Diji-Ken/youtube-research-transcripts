@@ -6,7 +6,7 @@
 | **チャンネル** | Google Workspace |
 | **公開日** | 2025年05月20日 |
 | **再生時間** | 0:21 |
-| **再生回数** | 3,927 |
+| **再生回数** | 3,938 |
 
 ## 概要
 Discover the next level of smart replies in Gmail! Gemini learns from your past emails and Google Drive files to suggest highly relevant and perfectly crafted responses that sound more like you.

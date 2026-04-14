@@ -6,7 +6,7 @@
 | **チャンネル** | Google Workspace |
 | **公開日** | 2025年05月20日 |
 | **再生時間** | 0:49 |
-| **再生回数** | 2,239 |
+| **再生回数** | 2,270 |
 
 ## 概要
 Google Vids helps you save time on tedious editing tasks. Sound your best with automatic transcript trim, which helps identify pauses and filler words to clean up in one click. Level audio levels in a single click with balance sound for crisp audio, without the hassle. These powerful yet easy-to-use features eliminate the need for complex editing skills and make video more accessible for everyone.

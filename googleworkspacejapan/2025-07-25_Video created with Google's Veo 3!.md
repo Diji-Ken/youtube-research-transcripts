@@ -6,7 +6,7 @@
 | **チャンネル** | Google Workspace |
 | **公開日** | 2025年07月25日 |
 | **再生時間** | 0:32 |
-| **再生回数** | 79,444 |
+| **再生回数** | 81,165 |
 
 ## 概要
 From video production to dev workflows with new AI-powered tools in Google Workspace

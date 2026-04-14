@@ -6,7 +6,7 @@
 | **チャンネル** | Google Workspace |
 | **公開日** | 2025年10月24日 |
 | **再生時間** | 0:40 |
-| **再生回数** | 155,154 |
+| **再生回数** | 155,290 |
 
 ## 概要
 Try Google Workspace with Gemini → http://goo.gle/42sSRyt

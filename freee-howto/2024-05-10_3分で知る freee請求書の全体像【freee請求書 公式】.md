@@ -6,7 +6,7 @@
 | **チャンネル** | freee使い方チャンネル【公式】 |
 | **公開日** | 2024年05月10日 |
 | **再生時間** | 3:55 |
-| **再生回数** | 24,466 |
+| **再生回数** | 24,740 |
 
 ## 概要
 【freee請求書】をはじめる▶ https://accounts.secure.freee.co.jp/sign_up?initial_service=invoice&service_name=invoice&redirect_url=https%3A%2F%2Finvoice.secure.freee.co.jp%2Factivation%3Fafter_sign_up%3Dtrue&back_url=https%3A%2F%2Fwww.freee.co.jp%2Finvoice%2Ffree%2F&login_url=https%3A%2F%2Faccounts.secure.freee.co.jp%2Fsessions%2Fnew%3Fservice_name%3Dinvoice%26redirect_url%3Dhttps%253A%252F%252Finvoice.secure.freee.co.jp&referral=youtube-invoice-howto-2306&utm_source=freee&utm_medium=seminar-youtube&utm_campaign=youtube-invoice-howto-2306

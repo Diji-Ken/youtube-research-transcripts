@@ -6,7 +6,7 @@
 | **チャンネル** | Google Workspace |
 | **公開日** | 2025年08月12日 |
 | **再生時間** | 0:38 |
-| **再生回数** | 3,191 |
+| **再生回数** | 3,198 |
 
 ## 概要
 Go deeper on any topic, faster. ✨ With the enhanced file upload in the Gemini App, you can use Deep Research on your Drive files. Upload a dense report and Gemini will extract key insights, summaries, and data, combining it with public information for a richer analysis. 👉 http://goo.gle/4ftkuwl 

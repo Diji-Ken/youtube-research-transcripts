@@ -6,7 +6,7 @@
 | **チャンネル** | Google Workspace |
 | **公開日** | 2025年04月23日 |
 | **再生時間** | 0:20 |
-| **再生回数** | 9,218 |
+| **再生回数** | 9,280 |
 
 ## 概要
 Check out the latest features available in Google Workspace this April to help you do your best work! These updated include Canvas and Audio Overviews in the Gemini App, contextual Smart Replies in Gmail, the new design sidebar in Google Slides, and new ways to keep organized in Google Chat. For more information, read our April Workspace Drops blog → https://goo.gle/4lROkxE

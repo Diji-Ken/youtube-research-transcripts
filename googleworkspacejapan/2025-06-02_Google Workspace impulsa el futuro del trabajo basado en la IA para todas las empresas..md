@@ -6,7 +6,7 @@
 | **チャンネル** | Google Workspace |
 | **公開日** | 2025年06月02日 |
 | **再生時間** | 1:30 |
-| **再生回数** | 876 |
+| **再生回数** | 879 |
 
 ## 概要
 Lo mejor de la IA de Google, entretejido en el día a día del trabajo.

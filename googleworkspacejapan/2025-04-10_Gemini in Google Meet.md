@@ -6,7 +6,7 @@
 | **チャンネル** | Google Workspace |
 | **公開日** | 2025年04月10日 |
 | **再生時間** | 0:35 |
-| **再生回数** | 6,359 |
+| **再生回数** | 6,495 |
 
 ## 概要
 Gemini in Meet is becoming your personal in-meeting advisor.

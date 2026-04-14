@@ -6,7 +6,7 @@
 | **チャンネル** | Google Workspace |
 | **公開日** | 2025年11月04日 |
 | **再生時間** | 0:41 |
-| **再生回数** | 4,088 |
+| **再生回数** | 4,205 |
 
 ## 概要
 Share booking pages all on a single, consolidated page, so clients can easily find and book the right appointment type. 

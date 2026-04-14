@@ -6,7 +6,7 @@
 | **チャンネル** | Google Workspace |
 | **公開日** | 2025年05月20日 |
 | **再生時間** | 0:30 |
-| **再生回数** | 2,600 |
+| **再生回数** | 2,608 |
 
 ## 概要
 Link any relevant decks, data, and reports directly into a Google Doc and Gemini will only pull from these sources when providing writing assistance, keeping suggestions focused and grounded in trusted content. So whether you're working on a status update, a research summary, or a business plan, you’re writing with exactly the context you need — no guesswork, no switching tabs.  See how this feature can boost your focus, streamline your workflow, and make referencing a breeze. 

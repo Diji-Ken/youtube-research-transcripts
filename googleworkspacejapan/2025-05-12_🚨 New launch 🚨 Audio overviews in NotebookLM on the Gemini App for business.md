@@ -6,7 +6,7 @@
 | **チャンネル** | Google Workspace |
 | **公開日** | 2025年05月12日 |
 | **再生時間** | 0:26 |
-| **再生回数** | 9,714 |
+| **再生回数** | 9,739 |
 
 ## 概要
 After seeing the success of Audio Overview in NotebookLM we’ve brought the feature to the Gemini App for businesses, educators, and students to help summarize on the go.

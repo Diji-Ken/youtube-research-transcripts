@@ -6,7 +6,7 @@
 | **チャンネル** | Google Workspace |
 | **公開日** | 2026年01月15日 |
 | **再生時間** | 1:00 |
-| **再生回数** | 4,511 |
+| **再生回数** | 4,756 |
 
 ## 概要
 Google Workspace with Gemini helps you make every meeting meaningful by handling the heavy lifting: from seamless scheduling, to real-time note-taking and assistance in Meet, to post-meeting follow-up.

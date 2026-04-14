@@ -6,7 +6,7 @@
 | **チャンネル** | Google Workspace |
 | **公開日** | 2025年08月08日 |
 | **再生時間** | 0:08 |
-| **再生回数** | 1,988 |
+| **再生回数** | 1,994 |
 
 ## 概要
 Try Google Vids for yourself → http://docs.google.com/videos/create

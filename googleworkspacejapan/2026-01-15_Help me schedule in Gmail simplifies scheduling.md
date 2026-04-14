@@ -6,7 +6,7 @@
 | **チャンネル** | Google Workspace |
 | **公開日** | 2026年01月15日 |
 | **再生時間** | 0:35 |
-| **再生回数** | 2,723 |
+| **再生回数** | 2,852 |
 
 ## 概要
 Gemini in Gmail recognizes when you’re trying to schedule a meeting, and offers time suggestions based on your Google Calendar availability and email context.

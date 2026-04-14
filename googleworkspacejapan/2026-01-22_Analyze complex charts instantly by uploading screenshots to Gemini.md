@@ -6,7 +6,7 @@
 | **チャンネル** | Google Workspace |
 | **公開日** | 2026年01月22日 |
 | **再生時間** | 2:28 |
-| **再生回数** | 1,957 |
+| **再生回数** | 2,591 |
 
 ## 概要
 In this video, you'll learn to use Gemini as your personal data analyst. Master the art of turning screenshot ""spaghetti"" charts into clear strategic insights by asking plain-English questions about the patterns you see.
@@ -35,7 +35,7 @@ Follow Google Workspace on Threads → https://goo.gle/4so5XYS
 。ここでは、
 AIを活用して業務を飛躍的に効率化するためのスキルをお教えします。
 会議で、まるで
-スパゲッティの皿のように線が絡み合った図表をじっと見つめた経験はありますか？ そこには
+スパゲッティの皿のように線が複雑に絡み合った図表をじっと見つめた経験はありますか？ そこには
 素晴らしい物語が隠されているのは分かっているけれど、
 雑音にかき消されて見えないんだ。 私も最近、全く同じ
 問題に直面しました。 顧客の
@@ -71,8 +71,8 @@ eCPMが急激に低下した特定のパートナー企業はありますか
 顧客のアカウントに関する別の問題だと分かった。
 これは私にとって膨大な時間の節約になっただけでなく、何
 よりも正しい
-答えを得ることができた。 間違った見込み客を追いかけるのではなく
-、
+答えを得ることができた。
+間違った見込み客を追いかけるのではなく、
 より戦略的な洞察を携えて迅速に顧客に戻り、
 収益減少の真の原因を解決する手助けをすることができる。  AI
 グラフ探偵になるには、まずAIにあなたの

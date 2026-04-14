@@ -6,7 +6,7 @@
 | **チャンネル** | Google Workspace |
 | **公開日** | 2024年10月15日 |
 | **再生時間** | 1:01 |
-| **再生回数** | 15,226 |
+| **再生回数** | 15,629 |
 
 ## 概要
 In this week's episode of Google Workspace Productivity Tips, we'll show you how to translate captions in Google Meet.

@@ -6,7 +6,7 @@
 | **チャンネル** | Google Workspace |
 | **公開日** | 2025年04月09日 |
 | **再生時間** | 0:17 |
-| **再生回数** | 7,317 |
+| **再生回数** | 7,383 |
 
 ## 概要
 Generate high-quality, original video clips directly within Vids, powered by our advanced Veo 2 model. Need a specific shot to illustrate a point or add visual flair? Generate clips with realistic motion and diverse styles to supplement your content and tell a more powerful story – no complex editing software required. This feature will roll out to alpha customers in the coming weeks.

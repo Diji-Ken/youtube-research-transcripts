@@ -6,7 +6,7 @@
 | **チャンネル** | Google Workspace |
 | **公開日** | 2025年05月29日 |
 | **再生時間** | 0:20 |
-| **再生回数** | 7,633 |
+| **再生回数** | 7,698 |
 
 ## 概要
 Check out the latest Workspace Drops for May → https://goo.gle/3Z6fjvt
