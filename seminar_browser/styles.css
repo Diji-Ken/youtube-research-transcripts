@@ -376,6 +376,58 @@ a:focus-visible {
   gap: 10px;
 }
 
+.handoff-guide {
+  display: grid;
+  gap: 12px;
+  border: 1px solid var(--strong-line);
+  border-radius: var(--radius);
+  background: #fffefa;
+  box-shadow: var(--shadow);
+  padding: 16px;
+}
+
+.handoff-head {
+  display: grid;
+  gap: 2px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 10px;
+}
+
+.handoff-head h3 {
+  margin: 0;
+}
+
+.handoff-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.handoff-grid article {
+  border-left: 3px solid var(--accent);
+  background: var(--panel-2);
+  padding: 11px 12px;
+}
+
+.handoff-grid h4 {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+
+.handoff-grid ol,
+.handoff-grid ul {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-left: 18px;
+}
+
+.handoff-grid li {
+  color: #3d4246;
+  font-size: 13px;
+  line-height: 1.48;
+}
+
 .overview-columns,
 .quality-columns {
   display: grid;
@@ -1006,6 +1058,7 @@ mark {
   .stats-grid,
   .tool-grid,
   .overview-grid,
+  .handoff-grid,
   .overview-columns,
   .quality-columns,
   .overview-hero,
