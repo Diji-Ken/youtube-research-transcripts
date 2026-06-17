@@ -534,7 +534,7 @@ function renderOverview() {
       ${stat("機能カタログ", `${(data.featureCatalog || []).length}項目`, "扱える機能・操作を抽出")}
       ${stat("平均文字数", `${(quality.avgChars || 0).toLocaleString()}字`, `中央値 ${(quality.medianChars || 0).toLocaleString()}字`)}
       ${stat("字幕ソース", sourceText || "unknown", "YouTube字幕由来")}
-      ${stat("精査済み", `${reviewSummary.reviewed || 0}本`, `未精査 ${reviewSummary.unreviewed ?? data.videos.length}本`)}
+      ${stat("精査済み", `${reviewSummary.reviewed || 0}本`, `深掘り ${reviewSummary.deepReviewed || 0}本 / 全文走査 ${reviewSummary.fullScanReviewed || 0}本`)}
     </section>
 
     <section class="handoff-guide">
@@ -547,7 +547,7 @@ function renderOverview() {
           <h4>見る順番</h4>
           <ol>
             <li>全体マップで、チャンネルのテーマ比率を確認</li>
-            <li>精査状況で、未精査/精査優先の本数を確認</li>
+            <li>精査状況で、深掘り精査/全文走査の内訳を確認</li>
             <li>講義候補で、どの講義を作れそうか確認</li>
             <li>機能カタログで、具体的な機能・成果物を確認</li>
             <li>必要な動画だけ詳細/Markdown全文/YouTubeで確認</li>
@@ -566,7 +566,7 @@ function renderOverview() {
           <h4>注意点</h4>
           <ul>
             <li>文字起こしはYouTube字幕由来で、人手校正済みではありません</li>
-            <li>講義候補は機械抽出なので、精査済みになるまで最終採用しないでください</li>
+            <li>全文走査レビューは根拠付きの一次整理です。主教材に採用する動画は深掘り精査の内容を優先してください</li>
             <li>短文・告知寄り動画は品質確認タブで分けて見てください</li>
             <li>社外共有前の最終資料化には、別途講義構成への落とし込みが必要です</li>
           </ul>
@@ -802,7 +802,7 @@ function renderReview() {
   const rows = filteredVideos()
     .filter((video) => video.review)
     .sort((a, b) => (b.review.priorityScore || 0) - (a.review.priorityScore || 0) || b.date.localeCompare(a.date));
-  els.reviewCount.textContent = `精査済み ${summary.reviewed || 0}本 / 未精査 ${summary.unreviewed || rows.length}本`;
+  els.reviewCount.textContent = `精査済み ${summary.reviewed || 0}本 / 未精査 ${summary.unreviewed ?? rows.length}本`;
 
   const statusRows = (summary.statusCounts || [])
     .map(
@@ -824,6 +824,16 @@ function renderReview() {
       `,
     )
     .join("");
+  const depthRows = (summary.depthCounts || [])
+    .map(
+      (item) => `
+        <div class="ratio-row">
+          <span>${escapeHtml(item.name)}</span>
+          <strong>${item.count}本</strong>
+        </div>
+      `,
+    )
+    .join("");
   const visible = rows.slice(0, state.visibleLimit);
   const queue = visible.map(reviewCard).join("");
 
@@ -832,9 +842,11 @@ function renderReview() {
       <h4>現在の状態</h4>
       <p>${escapeHtml(summary.note || "自動整理済みです。")}</p>
       <div class="review-stats">
-        ${stat("精査済み", `${summary.reviewed || 0}本`, "手動確認済み")}
-        ${stat("未精査", `${summary.unreviewed ?? rows.length}本`, "自動整理のみ")}
-        ${stat("精査優先", `${summary.highPriority || 0}本`, "主教材/最新版/短文など")}
+        ${stat("精査済み", `${summary.reviewed || 0}本`, "レビュー記録あり")}
+        ${stat("未精査", `${summary.unreviewed ?? rows.length}本`, "レビュー記録なし")}
+        ${stat("深掘り精査", `${summary.deepReviewed || 0}本`, "手動補完済み")}
+        ${stat("全文走査", `${summary.fullScanReviewed || 0}本`, "全字幕を走査")}
+        ${stat("深掘り優先", `${summary.highPriority || 0}本`, "主教材/最新版/短文など")}
         ${stat("字幕要確認", `${summary.needsQualityCheck || 0}本`, "短文・低密度")}
       </div>
     </section>
@@ -844,6 +856,10 @@ function renderReview() {
         <div class="ratio-table">${statusRows}</div>
       </article>
       <article class="overview-card">
+        <h3>確認粒度別</h3>
+        <div class="ratio-table">${depthRows}</div>
+      </article>
+      <article class="overview-card">
         <h3>優先度別</h3>
         <div class="ratio-table">${priorityRows}</div>
       </article>
@@ -851,8 +867,8 @@ function renderReview() {
     <section>
       <div class="results-head">
         <div>
-          <h3>精査キュー</h3>
-          <p>${rows.length}本表示対象。優先度順に表示しています。</p>
+          <h3>レビュー一覧</h3>
+          <p>${rows.length}本表示対象。深掘り精査と全文走査を含めて優先度順に表示しています。</p>
         </div>
       </div>
       <div class="review-list">${queue || `<div class="empty">該当するレビュー対象がありません。</div>`}</div>
@@ -891,7 +907,11 @@ function reviewCard(video) {
             <span>${video.charsPerMinute || "-"}字/分</span>
           </div>
           <h4>${highlight(video.title)}</h4>
-          <div class="tag-row">${reviewStatusTag(review)}<span class="tag">スコア ${review.priorityScore || 0}</span></div>
+          <div class="tag-row">
+            ${reviewStatusTag(review)}
+            <span class="tag">${escapeHtml(review.reviewDepth || "未精査")}</span>
+            <span class="tag">スコア ${review.priorityScore || 0}</span>
+          </div>
         </div>
         <button class="detail-button" data-detail-id="${video.id}">詳細</button>
       </div>
@@ -1183,9 +1203,11 @@ function openDetail(videoId) {
             <div class="tag-row">
               ${reviewStatusTag(review)}
               <span class="tag">スコア ${review.priorityScore || 0}</span>
+              <span class="tag">${escapeHtml(review.reviewDepth || "未精査")}</span>
+              ${review.reviewer ? `<span class="tag">${escapeHtml(review.reviewer)}</span>` : ""}
               <span class="tag">${escapeHtml(review.confidence || "未精査")}</span>
             </div>
-            <p class="review-note">文字起こしはYouTube字幕由来です。精査済みのみ、全文確認と要約補完を反映しています。</p>
+            <p class="review-note">文字起こしはYouTube字幕由来です。深掘り精査は手動補完、全文走査は全字幕を機械的に確認して根拠付きで補完したレビューです。</p>
             <p class="video-summary">${escapeHtml(review.nextAction || "")}</p>
             ${renderList(review.reasons || [], "理由なし")}
             ${review.finalSummary ? `<h5>精査済み要約</h5><p class="video-summary">${escapeHtml(review.finalSummary)}</p>` : ""}
