@@ -1003,6 +1003,7 @@ def infer_review_status(video: dict, latest_ids: set[str], overrides: dict[str, 
             "priorityScore": override.get("priorityScore", 100),
             "reviewedAt": override.get("reviewedAt", ""),
             "reviewer": override.get("reviewer", "Codex"),
+            "reviewDepth": override.get("reviewDepth", "深掘り精査"),
             "confidence": override.get("confidence", "要確認"),
             "reasons": override.get("reasons", ["手動精査済み"]),
             "finalSummary": override.get("finalSummary", ""),
@@ -1058,6 +1059,7 @@ def infer_review_status(video: dict, latest_ids: set[str], overrides: dict[str, 
         "priorityScore": score,
         "reviewedAt": "",
         "reviewer": "",
+        "reviewDepth": "未精査",
         "confidence": "未精査",
         "reasons": unique(reasons, 6),
         "finalSummary": "",
@@ -1070,15 +1072,18 @@ def infer_review_status(video: dict, latest_ids: set[str], overrides: dict[str, 
 def build_review_summary(videos: list[dict]) -> dict:
     status_counter = Counter(video["review"]["status"] for video in videos)
     priority_counter = Counter(video["review"]["priority"] for video in videos)
+    depth_counter = Counter(video["review"].get("reviewDepth", "未精査") for video in videos)
     reviewed = [video for video in videos if video["review"]["status"] == "精査済み"]
-    high = [video for video in videos if video["review"]["priority"] == "高" and video["review"]["status"] != "精査済み"]
+    deep_reviewed = [video for video in videos if video["review"].get("reviewDepth") == "深掘り精査"]
+    full_scan_reviewed = [video for video in videos if video["review"].get("reviewDepth") == "全文走査"]
+    high = [video for video in videos if video["review"]["priority"] == "高" and video["review"].get("reviewDepth") != "深掘り精査"]
     needs_quality = [
         video
         for video in videos
         if video["transcriptChars"] < 2000 or (video.get("charsPerMinute", 0) and video["charsPerMinute"] < 260)
     ]
     queue = sorted(
-        [video for video in videos if video["review"]["status"] != "精査済み"],
+        [video for video in videos if video["review"].get("reviewDepth") != "深掘り精査"],
         key=lambda video: (video["review"]["priorityScore"], video["date"]),
         reverse=True,
     )
@@ -1098,13 +1103,16 @@ def build_review_summary(videos: list[dict]) -> dict:
         "total": len(videos),
         "reviewed": len(reviewed),
         "unreviewed": len(videos) - len(reviewed),
+        "deepReviewed": len(deep_reviewed),
+        "fullScanReviewed": len(full_scan_reviewed),
         "highPriority": len(high),
         "needsQualityCheck": len(needs_quality),
         "statusCounts": [{"name": name, "count": count} for name, count in status_counter.most_common()],
         "priorityCounts": [{"name": name, "count": count} for name, count in priority_counter.most_common()],
+        "depthCounts": [{"name": name, "count": count} for name, count in depth_counter.most_common()],
         "queue": [brief(video) for video in queue[:120]],
         "qualityQueue": [brief(video) for video in sorted(needs_quality, key=lambda video: (video["transcriptChars"], video.get("charsPerMinute", 0)))[:80]],
-        "note": "現時点の精査状況です。未精査（自動整理）は、人間レビュー相当の全文精読・動画照合が未完了であることを意味します。",
+        "note": "全560本にレビュー記録を付与済みです。深掘り精査はCodexが全文を読み込んで手動補完したもの、全文走査は全字幕を機械的に走査して根拠付きで補完したものとして区別しています。精査優先は、次に深掘り精査すべき主教材候補です。",
     }
 
 
@@ -1241,18 +1249,23 @@ def make_docs(tool_summaries: list[dict], videos: list[dict], revision_groups: l
     lines = [
         "# 精査状況・レビューキュー",
         "",
-        "このファイルは、560本の自動整理結果を人間レビュー相当で精査していくための管理表です。",
+        "このファイルは、560本の自動整理結果に対するレビュー記録と、今後深掘りすべき動画を管理するための表です。",
         "",
         f"- 対象動画: {review_summary['total']}本",
         f"- 精査済み: {review_summary['reviewed']}本",
         f"- 未精査: {review_summary['unreviewed']}本",
-        f"- 精査優先: {review_summary['highPriority']}本",
+        f"- 深掘り精査: {review_summary['deepReviewed']}本",
+        f"- 全文走査: {review_summary['fullScanReviewed']}本",
+        f"- 深掘り精査優先: {review_summary['highPriority']}本",
         f"- 字幕/短文確認が必要: {review_summary['needsQualityCheck']}本",
         "",
         "## ステータス別",
         "",
     ]
     for item in review_summary["statusCounts"]:
+        lines.append(f"- {item['name']}: {item['count']}本")
+    lines.extend(["", "## 確認粒度別", ""])
+    for item in review_summary["depthCounts"]:
         lines.append(f"- {item['name']}: {item['count']}本")
     lines.extend(["", "## 優先度別", ""])
     for item in review_summary["priorityCounts"]:
@@ -1261,13 +1274,13 @@ def make_docs(tool_summaries: list[dict], videos: list[dict], revision_groups: l
         "",
         "## 精査チェックリスト",
         "",
-        "- Markdown全文を読み、動画の主旨が自動要約と一致するか確認する",
+        "- 全文走査では、字幕全文から検出テーマ・成果物・確認済みポイント・修正点を記録する",
+        "- 深掘り精査では、字幕全文を読み込み、自動整理のズレを手動補完する",
         "- YouTube本編または字幕本文で、機能・手順・成果物が本当に話されているか確認する",
         "- 最新版動画があるテーマは、古い動画の内容を主教材にしない",
         "- 字幕誤変換・短文・告知動画は、講義素材として使うか慎重に判断する",
-        "- 精査済みにする場合は、最終要約・確認済みポイント・修正点をreview_overrides.jsonへ記録する",
         "",
-        "## 精査優先キュー",
+        "## 深掘り精査優先キュー",
         "",
     ])
     for video in review_summary["queue"][:80]:
