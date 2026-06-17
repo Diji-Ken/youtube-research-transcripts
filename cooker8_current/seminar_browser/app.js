@@ -528,6 +528,42 @@ function renderOverview() {
       ${stat("字幕ソース", sourceText || "unknown", "YouTube字幕由来")}
     </section>
 
+    <section class="handoff-guide">
+      <div class="handoff-head">
+        <p class="eyebrow">For review</p>
+        <h3>共有された人は、まずここを見れば判断できます</h3>
+      </div>
+      <div class="handoff-grid">
+        <article>
+          <h4>見る順番</h4>
+          <ol>
+            <li>全体マップで、チャンネルのテーマ比率を確認</li>
+            <li>講義候補で、どの講義を作れそうか確認</li>
+            <li>機能カタログで、具体的な機能・成果物を確認</li>
+            <li>必要な動画だけ詳細/Markdown全文/YouTubeで確認</li>
+          </ol>
+        </article>
+        <article>
+          <h4>このURLで分かること</h4>
+          <ul>
+            <li>560本の中で、どのツール・論点が多いか</li>
+            <li>各動画を講義化するなら何を扱えるか</li>
+            <li>スプレッドシート、AppSheet、AI、会議、DXなどの具体テーマ</li>
+            <li>最新版を優先すべき重複テーマ</li>
+          </ul>
+        </article>
+        <article>
+          <h4>注意点</h4>
+          <ul>
+            <li>文字起こしはYouTube字幕由来で、人手校正済みではありません</li>
+            <li>講義候補は機械抽出なので、最終採用前に動画詳細を確認してください</li>
+            <li>短文・告知寄り動画は品質確認タブで分けて見てください</li>
+            <li>社外共有前の最終資料化には、別途講義構成への落とし込みが必要です</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
     <section class="overview-columns">
       <article class="overview-card">
         <h3>多い講義テーマ</h3>
