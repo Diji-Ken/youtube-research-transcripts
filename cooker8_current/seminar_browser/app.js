@@ -1,0 +1,629 @@
+const state = {
+  data: null,
+  tab: "videos",
+  query: "",
+  tool: "",
+  useCase: "",
+  year: "",
+  angle: "",
+  latestOnly: false,
+  hideShort: true,
+  sort: "date",
+  visibleLimit: 80,
+};
+
+const els = {};
+let latestIds = new Set();
+let toolMap = new Map();
+let useCaseMap = new Map();
+
+function $(selector) {
+  return document.querySelector(selector);
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function compact(value, max = 180) {
+  const text = String(value ?? "").replace(/\s+/g, " ").trim();
+  return text.length > max ? `${text.slice(0, max - 1)}…` : text;
+}
+
+function queryTokens() {
+  return state.query
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .filter(Boolean);
+}
+
+function highlight(text, tokens = queryTokens()) {
+  let safe = escapeHtml(text);
+  if (!tokens.length) return safe;
+  const pattern = tokens.map(escapeRegExp).join("|");
+  if (!pattern) return safe;
+  return safe.replace(new RegExp(`(${pattern})`, "gi"), "<mark>$1</mark>");
+}
+
+function scoreVideo(video, tokens) {
+  if (!tokens.length) return 0;
+  const title = video.title.toLowerCase();
+  const summary = video.summary.toLowerCase();
+  const toolNames = video.toolNames.join(" ").toLowerCase();
+  const useNames = video.useCaseNames.join(" ").toLowerCase();
+  const search = video.searchText.toLowerCase();
+  let score = 0;
+  for (const token of tokens) {
+    if (title.includes(token)) score += 90;
+    if (summary.includes(token)) score += 30;
+    if (toolNames.includes(token)) score += 25;
+    if (useNames.includes(token)) score += 18;
+    const firstHit = search.indexOf(token);
+    if (firstHit >= 0) score += 8 + Math.max(0, 10 - Math.floor(firstHit / 800));
+  }
+  return score;
+}
+
+function videoHasAllTokens(video, tokens) {
+  if (!tokens.length) return true;
+  const haystack = [
+    video.title,
+    video.summary,
+    video.toolNames.join(" "),
+    video.useCaseNames.join(" "),
+    video.searchText,
+  ]
+    .join(" ")
+    .toLowerCase();
+  return tokens.every((token) => haystack.includes(token));
+}
+
+function transcriptHref(path) {
+  return `../${path}`;
+}
+
+function initElements() {
+  Object.assign(els, {
+    generatedMeta: $("#generatedMeta"),
+    stats: $("#stats"),
+    searchInput: $("#searchInput"),
+    sortSelect: $("#sortSelect"),
+    yearSelect: $("#yearSelect"),
+    latestOnly: $("#latestOnly"),
+    hideShort: $("#hideShort"),
+    resetButton: $("#resetButton"),
+    toolFilter: $("#toolFilter"),
+    useCaseFilter: $("#useCaseFilter"),
+    angleList: $("#angleList"),
+    activeSummary: $("#activeSummary"),
+    selectedTags: $("#selectedTags"),
+    resultCount: $("#resultCount"),
+    videoList: $("#videoList"),
+    toolCards: $("#toolCards"),
+    revisionGroups: $("#revisionGroups"),
+    qualityPanel: $("#qualityPanel"),
+    detailDialog: $("#detailDialog"),
+    detailContent: $("#detailContent"),
+    loadError: $("#loadError"),
+  });
+
+  els.searchInput.addEventListener("input", (event) => {
+    state.query = event.target.value;
+    state.visibleLimit = 80;
+    render();
+  });
+  els.sortSelect.addEventListener("change", (event) => {
+    state.sort = event.target.value;
+    renderVideos();
+  });
+  els.yearSelect.addEventListener("change", (event) => {
+    state.year = event.target.value;
+    state.visibleLimit = 80;
+    render();
+  });
+  els.latestOnly.addEventListener("change", (event) => {
+    state.latestOnly = event.target.checked;
+    state.visibleLimit = 80;
+    render();
+  });
+  els.hideShort.addEventListener("change", (event) => {
+    state.hideShort = event.target.checked;
+    state.visibleLimit = 80;
+    render();
+  });
+  els.resetButton.addEventListener("click", resetFilters);
+  document.querySelectorAll(".tab").forEach((tab) => {
+    tab.addEventListener("click", () => switchTab(tab.dataset.tab));
+  });
+  els.detailDialog.addEventListener("click", (event) => {
+    if (event.target === els.detailDialog) els.detailDialog.close();
+  });
+}
+
+async function loadData() {
+  try {
+    const response = await fetch("./data/seminar-data.json");
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    state.data = await response.json();
+  } catch (error) {
+    console.error(error);
+    els.loadError.hidden = false;
+    return;
+  }
+
+  latestIds = new Set();
+  state.data.revisionGroups.forEach((group) => latestIds.add(group.latest.id));
+  state.data.tools.forEach((tool) => {
+    if (tool.latestVideo) latestIds.add(tool.latestVideo.id);
+  });
+  toolMap = new Map(state.data.tools.map((tool) => [tool.id, tool]));
+  useCaseMap = new Map(state.data.useCases.map((useCase) => [useCase.id, useCase]));
+  renderStatic();
+  render();
+}
+
+function renderStatic() {
+  const { channel, generatedAt, videos, tools } = state.data;
+  const latest = videos[0];
+  const fullCount = videos.filter((video) => video.transcriptChars > 0).length;
+  const shortCount = videos.filter((video) => video.transcriptChars < 800).length;
+  els.generatedMeta.textContent = `${generatedAt}生成 / ${channel.videoCount}本 / 最新 ${latest.date}`;
+  $("#channelLink").href = channel.url;
+
+  els.stats.innerHTML = [
+    stat("対象動画", `${channel.videoCount}本`, "現行公開動画"),
+    stat("文字起こし", `${fullCount}本`, "全件取得済み"),
+    stat("ツール分類", `${tools.length}件`, "主分類で560本を整理"),
+    stat("最新版候補", `${latestIds.size}本`, "ツール・重複テーマの優先動画"),
+    stat("短文要確認", `${shortCount}本`, "800字未満"),
+  ].join("");
+
+  const years = [...new Set(videos.map((video) => video.year))].sort().reverse();
+  els.yearSelect.innerHTML = `<option value="">全年</option>${years
+    .map((year) => `<option value="${year}">${year}</option>`)
+    .join("")}`;
+
+  renderAngleFilters();
+  renderToolFilters();
+  renderUseCaseFilters();
+  renderTools();
+  renderLatest();
+  renderQuality();
+}
+
+function stat(label, value, note) {
+  return `
+    <article class="stat-card">
+      <div class="stat-label">${escapeHtml(label)}</div>
+      <div class="stat-value">${escapeHtml(value)}</div>
+      <div class="small">${escapeHtml(note)}</div>
+    </article>
+  `;
+}
+
+function renderAngleFilters() {
+  const allButton = `
+    <button class="angle-button active" data-angle="">
+      <span>すべて</span><span class="count-pill">${state.data.videos.length}</span>
+    </button>
+  `;
+  const buttons = state.data.seminarAngles
+    .map((angle, index) => {
+      const count = state.data.videos.filter((video) => angle.tools.includes(video.primaryTool)).length;
+      return `
+        <button class="angle-button" data-angle="${index}">
+          <span>${escapeHtml(angle.title)}</span><span class="count-pill">${count}</span>
+        </button>
+      `;
+    })
+    .join("");
+  els.angleList.innerHTML = allButton + buttons;
+  els.angleList.querySelectorAll("button").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.angle = button.dataset.angle;
+      state.visibleLimit = 80;
+      render();
+    });
+  });
+}
+
+function renderToolFilters() {
+  const buttons = [
+    `<button class="filter-button active" data-tool=""><span>すべて</span><span class="count-pill">${state.data.videos.length}</span></button>`,
+    ...state.data.tools.map(
+      (tool) => `
+        <button class="filter-button" data-tool="${tool.id}">
+          <span>${escapeHtml(tool.name)}</span><span class="count-pill">${tool.videoCount}</span>
+        </button>
+      `,
+    ),
+  ].join("");
+  els.toolFilter.innerHTML = buttons;
+  els.toolFilter.querySelectorAll("button").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.tool = button.dataset.tool;
+      state.visibleLimit = 80;
+      render();
+    });
+  });
+}
+
+function renderUseCaseFilters() {
+  const buttons = [
+    `<button class="filter-button active" data-use-case=""><span>すべて</span><span class="count-pill">${state.data.videos.length}</span></button>`,
+    ...state.data.useCases.map(
+      (useCase) => `
+        <button class="filter-button" data-use-case="${useCase.id}">
+          <span>${escapeHtml(useCase.name)}</span><span class="count-pill">${useCase.videoCount}</span>
+        </button>
+      `,
+    ),
+  ].join("");
+  els.useCaseFilter.innerHTML = buttons;
+  els.useCaseFilter.querySelectorAll("button").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.useCase = button.dataset.useCase;
+      state.visibleLimit = 80;
+      render();
+    });
+  });
+}
+
+function updateFilterButtons() {
+  els.toolFilter.querySelectorAll("button").forEach((button) => {
+    button.classList.toggle("active", button.dataset.tool === state.tool);
+  });
+  els.useCaseFilter.querySelectorAll("button").forEach((button) => {
+    button.classList.toggle("active", button.dataset.useCase === state.useCase);
+  });
+  els.angleList.querySelectorAll("button").forEach((button) => {
+    button.classList.toggle("active", button.dataset.angle === state.angle);
+  });
+}
+
+function resetFilters() {
+  Object.assign(state, {
+    query: "",
+    tool: "",
+    useCase: "",
+    year: "",
+    angle: "",
+    latestOnly: false,
+    hideShort: true,
+    sort: "date",
+    visibleLimit: 80,
+  });
+  els.searchInput.value = "";
+  els.yearSelect.value = "";
+  els.latestOnly.checked = false;
+  els.hideShort.checked = true;
+  els.sortSelect.value = "date";
+  render();
+}
+
+function switchTab(tabName) {
+  state.tab = tabName;
+  document.querySelectorAll(".tab").forEach((tab) => {
+    tab.classList.toggle("active", tab.dataset.tab === tabName);
+  });
+  document.querySelectorAll(".view").forEach((view) => {
+    view.classList.toggle("active", view.id === `${tabName}View`);
+  });
+}
+
+function filteredVideos() {
+  const tokens = queryTokens();
+  const angle = state.angle ? state.data.seminarAngles[Number(state.angle)] : null;
+  let rows = state.data.videos.map((video) => ({ ...video, _score: scoreVideo(video, tokens) }));
+
+  rows = rows.filter((video) => {
+    if (state.query && !videoHasAllTokens(video, tokens)) return false;
+    if (state.tool && video.primaryTool !== state.tool) return false;
+    if (state.useCase && !video.useCases.includes(state.useCase)) return false;
+    if (state.year && video.year !== state.year) return false;
+    if (angle && !angle.tools.includes(video.primaryTool)) return false;
+    if (state.latestOnly && !latestIds.has(video.id)) return false;
+    if (state.hideShort && video.transcriptChars < 800) return false;
+    return true;
+  });
+
+  rows.sort((a, b) => {
+    if (state.sort === "relevance" && tokens.length) {
+      return b._score - a._score || b.date.localeCompare(a.date);
+    }
+    if (state.sort === "length") {
+      return b.transcriptChars - a.transcriptChars || b.date.localeCompare(a.date);
+    }
+    return b.date.localeCompare(a.date);
+  });
+  return rows;
+}
+
+function render() {
+  updateFilterButtons();
+  renderActiveSummary();
+  renderSelectedTags();
+  renderVideos();
+}
+
+function renderActiveSummary() {
+  const lines = [];
+  if (state.angle) {
+    const angle = state.data.seminarAngles[Number(state.angle)];
+    lines.push(`<strong>${escapeHtml(angle.title)}</strong>: ${escapeHtml(angle.pitch)} 対象: ${escapeHtml(angle.target)}`);
+  }
+  if (state.tool) {
+    const tool = toolMap.get(state.tool);
+    lines.push(`<strong>${escapeHtml(tool.name)}</strong>: ${escapeHtml(tool.capabilities[0])}`);
+  }
+  if (state.useCase) {
+    const useCase = useCaseMap.get(state.useCase);
+    lines.push(`<strong>${escapeHtml(useCase.name)}</strong>の観点で絞り込み中`);
+  }
+  if (state.query) lines.push(`検索語: <strong>${escapeHtml(state.query)}</strong>`);
+  els.activeSummary.innerHTML = lines.length
+    ? lines.join("<br />")
+    : "ツール名だけでなく、実際の業務用途、手順、事例の観点で横断検索できます。";
+}
+
+function renderSelectedTags() {
+  const tags = [];
+  if (state.angle) tags.push(state.data.seminarAngles[Number(state.angle)].title);
+  if (state.tool) tags.push(toolMap.get(state.tool).name);
+  if (state.useCase) tags.push(useCaseMap.get(state.useCase).name);
+  if (state.year) tags.push(`${state.year}年`);
+  if (state.latestOnly) tags.push("最新版候補");
+  if (state.hideShort) tags.push("短文除外");
+  els.selectedTags.innerHTML = tags.map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("");
+}
+
+function renderVideos() {
+  if (!state.data) return;
+  const rows = filteredVideos();
+  els.resultCount.textContent = `${rows.length}本ヒット / ${state.data.videos.length}本`;
+  const visible = rows.slice(0, state.visibleLimit);
+  els.videoList.innerHTML = visible.map(videoCard).join("");
+
+  if (!rows.length) {
+    els.videoList.innerHTML = `<div class="empty">条件に合う動画がありません。検索語やフィルタを調整してください。</div>`;
+    return;
+  }
+  if (rows.length > state.visibleLimit) {
+    const button = document.createElement("button");
+    button.className = "button ghost";
+    button.textContent = `さらに表示 (${rows.length - state.visibleLimit}本)`;
+    button.addEventListener("click", () => {
+      state.visibleLimit += 80;
+      renderVideos();
+    });
+    els.videoList.appendChild(button);
+  }
+
+  els.videoList.querySelectorAll("[data-detail-id]").forEach((button) => {
+    button.addEventListener("click", () => openDetail(button.dataset.detailId));
+  });
+}
+
+function videoCard(video) {
+  const tags = [
+    `<span class="tag tool">${escapeHtml(video.primaryToolName)}</span>`,
+    ...video.useCaseNames.slice(0, 3).map((name) => `<span class="tag use">${escapeHtml(name)}</span>`),
+  ];
+  if (latestIds.has(video.id)) tags.push(`<span class="tag">最新版候補</span>`);
+  return `
+    <article class="video-card">
+      <div>
+        <div class="video-meta">
+          <span>${escapeHtml(video.date)}</span>
+          <span>${escapeHtml(video.duration || "")}</span>
+          <span>${video.transcriptChars.toLocaleString()}字</span>
+          <span>ID: ${escapeHtml(video.id)}</span>
+        </div>
+        <h4><a class="video-title-link" href="${video.url}" target="_blank" rel="noreferrer">${highlight(video.title)}</a></h4>
+        <div class="tag-row">${tags.join("")}</div>
+        <p class="video-summary">${highlight(video.summary)}</p>
+        <div class="snippet-list">${renderSnippets(video)}</div>
+      </div>
+      <div class="video-actions">
+        <a class="action-link primary" href="${video.url}" target="_blank" rel="noreferrer">YouTube</a>
+        <button class="detail-button" data-detail-id="${video.id}">詳細</button>
+        <a class="action-link" href="${transcriptHref(video.mdFile)}" target="_blank" rel="noreferrer">Markdown</a>
+        <a class="action-link" href="${transcriptHref(video.txtFile)}" target="_blank" rel="noreferrer">TXT</a>
+      </div>
+    </article>
+  `;
+}
+
+function renderSnippets(video) {
+  const tokens = queryTokens();
+  let snippets = video.snippets || [];
+  if (tokens.length) {
+    const text = video.searchText || "";
+    const lower = text.toLowerCase();
+    const found = [];
+    for (const token of tokens) {
+      const index = lower.indexOf(token);
+      if (index >= 0) {
+        const start = Math.max(0, index - 90);
+        const end = Math.min(text.length, index + token.length + 220);
+        found.push(compact(text.slice(start, end), 260));
+      }
+      if (found.length >= 2) break;
+    }
+    if (found.length) snippets = found;
+  }
+  return snippets
+    .slice(0, 2)
+    .map((snippet) => `<div class="snippet">${highlight(snippet)}</div>`)
+    .join("");
+}
+
+function renderTools() {
+  els.toolCards.innerHTML = state.data.tools.map(toolCard).join("");
+  els.toolCards.querySelectorAll("[data-set-tool]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.tool = button.dataset.setTool;
+      switchTab("videos");
+      render();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  });
+}
+
+function toolCard(tool) {
+  const useCases = (tool.topUseCases || [])
+    .slice(0, 3)
+    .map((useCase) => `<span class="tag use">${escapeHtml(useCase.name)} ${useCase.count}</span>`)
+    .join("");
+  const videos = (tool.topVideos || [])
+    .slice(0, 4)
+    .map(
+      (video) => `
+        <a class="mini-video" href="${video.url}" target="_blank" rel="noreferrer">
+          ${escapeHtml(video.date)} ${escapeHtml(compact(video.title, 76))}
+        </a>
+      `,
+    )
+    .join("");
+  return `
+    <article class="tool-card">
+      <div class="tool-card-head">
+        <div>
+          <h4>${escapeHtml(tool.name)}</h4>
+          <p class="card-sub">関連 ${tool.relatedCount}本 / 主分類 ${tool.videoCount}本</p>
+        </div>
+        <div class="tool-count">${tool.videoCount}</div>
+      </div>
+      <ul class="capability-list">
+        ${tool.capabilities.map((capability) => `<li>${escapeHtml(capability)}</li>`).join("")}
+      </ul>
+      <div class="tag-row">${useCases}</div>
+      <div class="mini-video-list">${videos}</div>
+      <button class="detail-button" data-set-tool="${tool.id}">このツールで絞り込む</button>
+    </article>
+  `;
+}
+
+function renderLatest() {
+  els.revisionGroups.innerHTML = state.data.revisionGroups
+    .map((group) => {
+      const older = group.older
+        .map(
+          (video) => `
+          <li>
+            <a href="${video.url}" target="_blank" rel="noreferrer">
+              ${escapeHtml(video.date)} ${escapeHtml(compact(video.title, 92))}
+            </a>
+          </li>
+        `,
+        )
+        .join("");
+      return `
+        <article class="revision-card">
+          <div class="revision-layout">
+            <div>
+              <h4>${escapeHtml(group.name)} <span class="tag">${group.count}本</span></h4>
+              <p class="video-summary">${escapeHtml(group.note)}</p>
+              <div class="latest-box">
+                <div class="small">最新優先</div>
+                <a class="video-title-link" href="${group.latest.url}" target="_blank" rel="noreferrer">
+                  ${escapeHtml(group.latest.date)} ${escapeHtml(group.latest.title)}
+                </a>
+              </div>
+            </div>
+            <div>
+              <div class="small">過去動画</div>
+              <ul class="older-list">${older}</ul>
+            </div>
+          </div>
+        </article>
+      `;
+    })
+    .join("");
+}
+
+function renderQuality() {
+  const videos = state.data.videos;
+  const short = videos.filter((video) => video.transcriptChars < 800).sort((a, b) => a.transcriptChars - b.transcriptChars);
+  const full = videos.filter((video) => video.transcriptChars > 0);
+  const avg = Math.round(full.reduce((sum, video) => sum + video.transcriptChars, 0) / full.length);
+  const latest = videos[0];
+  const oldest = videos[videos.length - 1];
+  const shortList = short
+    .map(
+      (video) => `
+      <article class="quality-card">
+        <div class="video-meta"><span>${escapeHtml(video.date)}</span><span>${video.transcriptChars}字</span><span>${escapeHtml(video.id)}</span></div>
+        <a class="video-title-link" href="${video.url}" target="_blank" rel="noreferrer">${escapeHtml(video.title)}</a>
+      </article>
+    `,
+    )
+    .join("");
+
+  els.qualityPanel.innerHTML = `
+    <div class="quality-grid">
+      ${stat("対象動画", `${videos.length}本`, `${oldest.date} - ${latest.date}`)}
+      ${stat("文字起こしあり", `${full.length}本`, "全件テキスト化済み")}
+      ${stat("平均文字数", `${avg.toLocaleString()}字`, "本文ベース")}
+      ${stat("短文要確認", `${short.length}本`, "800字未満")}
+    </div>
+    <p class="quality-note">短いものは告知動画・プレゼント動画などで、セミナー教材としては優先度が低い可能性があります。</p>
+    <div class="short-list">${shortList || `<div class="empty">短い文字起こしはありません。</div>`}</div>
+  `;
+}
+
+function openDetail(videoId) {
+  const video = state.data.videos.find((item) => item.id === videoId);
+  if (!video) return;
+  const relatedTools = video.toolNames.map((name) => `<span class="tag tool">${escapeHtml(name)}</span>`).join("");
+  const useCases = video.useCaseNames.map((name) => `<span class="tag use">${escapeHtml(name)}</span>`).join("");
+  els.detailContent.innerHTML = `
+    <div class="detail-inner">
+      <div class="detail-head">
+        <div>
+          <div class="video-meta">
+            <span>${escapeHtml(video.date)}</span>
+            <span>${escapeHtml(video.duration || "")}</span>
+            <span>${video.transcriptChars.toLocaleString()}字</span>
+            <span>${escapeHtml(video.id)}</span>
+          </div>
+          <h3>${escapeHtml(video.title)}</h3>
+        </div>
+        <button class="close-button" aria-label="閉じる" data-close-dialog>×</button>
+      </div>
+      <div class="detail-grid">
+        <div>
+          <p class="video-summary">${escapeHtml(video.summary)}</p>
+          <div class="tag-row">${relatedTools}${useCases}${latestIds.has(video.id) ? `<span class="tag">最新版候補</span>` : ""}</div>
+          <div class="snippet-list">${renderSnippets(video)}</div>
+          <h4>文字起こしプレビュー</h4>
+          <div class="transcript-preview">${highlight(video.searchText)}</div>
+        </div>
+        <div class="video-actions">
+          <a class="action-link primary" href="${video.url}" target="_blank" rel="noreferrer">YouTubeで開く</a>
+          <a class="action-link" href="${transcriptHref(video.mdFile)}" target="_blank" rel="noreferrer">Markdown全文</a>
+          <a class="action-link" href="${transcriptHref(video.txtFile)}" target="_blank" rel="noreferrer">TXT全文</a>
+          <button class="detail-button" data-copy-title>タイトルをコピー</button>
+        </div>
+      </div>
+    </div>
+  `;
+  els.detailContent.querySelector("[data-close-dialog]").addEventListener("click", () => els.detailDialog.close());
+  els.detailContent.querySelector("[data-copy-title]").addEventListener("click", async () => {
+    await navigator.clipboard.writeText(`${video.date} ${video.title} ${video.url}`);
+  });
+  els.detailDialog.showModal();
+}
+
+initElements();
+loadData();

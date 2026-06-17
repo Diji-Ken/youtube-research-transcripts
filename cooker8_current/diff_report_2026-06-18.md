@@ -1,0 +1,207 @@
+# cooker8 差分取得レポート 2026-06-18
+
+## 結果
+
+- YouTube現行動画数: 560本
+- 文字起こし整理版: 560本
+- 未取得: 0本
+- 取得前のMarkdown不足: 172本
+- 今回字幕/メタ情報を取得したURL: 188本
+- 2026-05-14以降の新規差分: 12本
+
+## 保存先
+
+- Markdown: `/Users/m/Workspace/mirai/40_research/YouTube/transcripts_clean/cooker8/md`
+- TXT: `/Users/m/Workspace/mirai/40_research/YouTube/transcripts_clean/cooker8/txt`
+- 一覧CSV: `/Users/m/Workspace/mirai/40_research/YouTube/transcripts_clean/cooker8/manifest.csv`
+- 一覧JSON: `/Users/m/Workspace/mirai/40_research/YouTube/transcripts_clean/cooker8/manifest.json`
+
+## 2026-05-14以降の差分
+
+- 2026-06-17 `Srpmw6QnZuU` 【朗報】ブラウザ作業がAIで激変。Gemini in Chromeで生産性が爆上がりする3つの理由。 (4262字)
+- 2026-06-13 `0yBaDanytww` 【まとめ集】AppSheetがもっと直感的に！「モバイルフレームワーク」を完全攻略。 (4307字)
+- 2026-06-10 `60ri7R0ETFc` 【クリエイティブ×​AI】あなたも知ってる、あのヒット映画や有名CMを手掛ける会社がGoogle WorkspaceとGeminiを“おしゃれ”に使い倒す！？ (9140字)
+- 2026-06-08 `3ckOCImQ8qY` 【外注 vs 内製】結局どっちが得なのか、数百万円の見積もりを前に考えてみた。 (1323字)
+- 2026-06-06 `Pm1GL9v0G_g` 【マインド】過去の評価は変えられない。それでも「証明」し続けなければならない理由とは。 (9940字)
+- 2026-06-03 `Q4ljSLWSDQ0` 【2026年6月】Google最新アップデート8選！会議中にGeminiが日本語要約する神機能も登場。 (5906字)
+- 2026-05-30 `ibtPkPdAzlg` 「会議＝報告の場」にするのはもう終わり。超速で進む牛乳屋の会議に潜入。 (5212字)
+- 2026-05-27 `nn4XgEs-FE0` 【長引く会議の理由】なぜ議論は噛み合わないのか？ズレを即解決する3ステップ (5051字)
+- 2026-05-23 `tLHVnxgF-BU` 【9割の現実】1割だけが生き残れる、中小企業のSNS生存戦略。短期目標NG・社長が出ろ・絶対やめるな。 (5913字)
+- 2026-05-20 `8JjlibHofik` 【超時短術】管理者が歓喜する？学校教育でChromebookが選ばれる理由も。 (7350字)
+- 2026-05-16 `JQJICJ7gQBs` 【中小企業の味方】高額なウイルスソフトをなんとなく入れてない？実は、簡単に強固なセキュリティがつけられる方法があります。 (4522字)
+- 2026-05-15 `H1gV2tu_R9c` 【外注脱却】月50万のSNS代行をやめて、社内にSNSチームを作った方がいい理由 (1043字)
+
+## 取得前に本文不足だった動画
+
+- `Srpmw6QnZuU` 【朗報】ブラウザ作業がAIで激変。Gemini in Chromeで生産性が爆上がりする3つの理由。
+- `0yBaDanytww` [Summary] Make AppSheet More Intuitive! Mastering the "Mobile Framework"
+- `60ri7R0ETFc` [Creativity x AI] You know the company behind that hit movie and famous commercial that you've al...
+- `3ckOCImQ8qY` [Outsourcing vs. In-house] Which is ultimately more cost-effective? I considered this question in...
+- `Pm1GL9v0G_g` [Mindset] You Can't Change the Past. Here's Why You Still Have to Keep "Proving" Yourself.
+- `Q4ljSLWSDQ0` [June 2026] 8 Latest Google Updates! Including a Game-Changing Feature Where Gemini Summarizes Me...
+- `ibtPkPdAzlg` Stop turning meetings into status reports. A look inside a lightning-fast meeting at a dairy comp...
+- `nn4XgEs-FE0` 【長引く会議の理由】なぜ議論は噛み合わないのか？ズレを即解決する3ステップ
+- `tLHVnxgF-BU` [The 90% Reality] Only 10% Survive: SNS Survival Strategies for SMEs. No Short-Term Goals, The CE...
+- `8JjlibHofik` [Super Time-Saving Tips] Administrators will be delighted? The reasons why Chromebooks are being ...
+- `JQJICJ7gQBs` [A friend to small and medium-sized businesses] Are you installing expensive antivirus software w...
+- `H1gV2tu_R9c` [Breaking Free from Outsourcing] Why You Should Stop Paying ¥500,000/month for Outsourcing Social...
+- `Hdgro02E6MI` 元コンサルが教える人に指摘を伝えるときの魔法のコトバ「Shall we dance力」。部下や同僚への注意の仕方。【ライブ切り抜き】
+- `TGLXejPt2v4` 【連携強化】いつでも、どこでもMeetで共同作業。チーム作業がより効率的に！GoogleWorkspace2022年5月最新情報【GoogleWorkspace 第103回】
+- `ukwSxtDLqK8` 悩めるマネージャー必見。部下との良好な関係性をつくるためには？【ライブ切り抜き】
+- `rFWP-Ce44MI` 【無料】Googleが提供する学習サービスが凄すぎた。誰でも学べてキャリアップにも使える！
+- `MFGlvbuljaE` 【新時代】新たな必須スキル。ビジネスチャット力。基本的な守るべきルール３つ。
+- `hTgRcIWBP_Y` 【ビジネスに超使える】Googleマップが神ツールに変化。Googleデータポータルを使って簡単連携。
+- `ceUTCWm_Knk` [For Beginners] Everything you need to know about Google Chat in 2022. If you're using Google Cha...
+- `K0pYrux_I7M` 【Smart canvas】Googleの最強プロジェクト管理ツールがドキュメントに実装。【GoogleWorkspace #95】
+- `zA2NUvrvvFo` 【ついに実装】ドキュメントがNotion化？スマートキャンバス構想が実現。GoogleWorkspace2022年3月最新情報【GoogleWorkspace #94】
+- `9l1BVhPqFsA` 【これが真髄】複数のスプレッドシートを統合して集計できるデータポータルを活用しよう。
+- `RqL5IlfyhVA` [For beginners] How to use Google Data Portal. Demonstration of basic menus.
+- `fkiGxpcYMlA` The best note-taking technique I learned during my time as a consultant. A note-taking technique ...
+- `AIfGmOhgESs` 【イチから実演】Googleデータポータルを使ってスプレッドシートの営業実績を連動。誰でもできる作り方を最初から最後まですべて見せます。
+- `m9FNgU8tv1w` 【無料】仕事用のアドレスでGoogleWorkspaceが使用可能！GoogleWorkspaceの無料プランがついに誕生。【GoogleWorkspace #93】
+- `_3D4ecmW5tE` 【自宅から世界へ】Googleだからできる、至極のWEBサイトを発見しました。Google Arts & Culture
+- `jDi72LTVXqw` 【無料で最強】Googleデータポータルで集計・分析作業を超簡単に。スプレッドシートユーザーは絶対に見てほしい必見の最強ツール。
+- `v8D75oJUNqw` 【探すを無くす】スプレットシートの真髄。ファイルの一元管理シートの簡単な作り方。【GoogleWorkspace #92】
+- `LtUyBg_Iljw` 【新機能】画面共有がより便利に。コンパニオンモード登場。GoogleWorkspace2022年2月最新情報（ED後におまけあり）【GoogleWorkspace #90】
+- `DARKljRq204` 社内ポータル「使われるサイト」に改良！Googleサイトの活用ポイントは［検索］にあった！【GoogleWorkspace #88】
+- `QCN6CwbmwMk` 【まだ間に合う】今から2022年を有意義に過ごすための５つのポイント
+- `SPN25mzqRtI` 【解決】資料を共有しながら参加者の顔を見るには？Google Meetを使いこなしてウェブ会議をスムーズに。【GoogleWorkspace #87】
+- `alWssPcLPfo` ついに音声通話が可能に！ドキュメントが大幅進化。2022年1月Googleワークスペース最新情報【GoogleWorkspace #86】
+- `Lr07CtRDjVI` 【プレゼント企画】感謝を込めて。にっしーより皆様へ。
+- `ri4cw4Jnc50` 社内会議を便利に楽しく!!GoogleMeetで自動議事録&ニコ生仕様に変える拡張機能を紹介!! 【GoogleWorkspace #85】
+- `Pw3Qkt9wGx8` [Convenient but not used?] Three unknown features of Google Workspace. From linking Google Calend...
+- `XizQzQjCX_E` 【超便利】GoogleWorkspaceの弱点克服!? G神厳選の無料で使える便利なChrome拡張機能を共有。【GoogleWorkspace #81】
+- `B1KAJhg6SzQ` 一目でわかるチェックリストの作り方。スプレッドシートを活用して業務のミスや漏れをなくそう。【GoogleWorkspace #81】
+- `0YG-X5EUEVw` 【大掃除】Googleドライブを「無題の〇〇」が占領してませんか？そんなワークスペースのあるあるを整理します【GoogleWorkspace #80】
+- `p7DnEjiKk3I` 【神機能】スプレッドシートでワークフローがついに実装！！2021年12月アップデート最新情報。【GoogleWorkspace #79】
+- `7EjQ59GYJMs` 【2021.11最新】スプレッドシートのメニュー項目がリニューアル。何が変わったかをイチから解説。【GoogleWorkspace #78】
+- `ibnr1ktgvo0` 【初心者向け】2021年保存版Googleフォームの全て。使い方をイチから教えます。仕事への活用方法の解説あり。【GoogleWorkspace #77】
+- `EuriOe-z9Dk` [Super simple] How to communicate smoothly. A method that works in any situation.
+- `1Sk_8Db4XSw` [For Beginners] Everything you need to know about Google Calendar for 2021. Learn how to use it f...
+- `wR8OeHqBRE0` 【衝撃】ついに待望の〇〇が実装。2021年11月アップデート最新情報。【GoogleWorkspace #75】
+- `mvWrNvYG5pk` 【初心者向け】後編：Gmailの基本の設定と使い方（2021年10月版）メール作成から漏れないための管理方法まで。【GoogleWorkspace #74】
+- `mIa6boF4Jd8` [For Beginners] Part 1: Basic Gmail Settings and Usage (October 2021 Edition) For those starting ...
+- `ABRAeFBquPA` [Now that's clear] A super concise summary of the differences between the paid and free versions ...
+- `3bZNceyhW3A` 【大発見】Googleドキュメントの会議活用術。一瞬で議事録が完成するG神発見の奇跡の手法。【GoogleWorkspace #69】
+- `xQUmk8UzLyc` Googleサイトが待望の進化。2021年10月アップデート最新情報。【GoogleWorkspace #68】
+- `Bumf0rYHTdk` 【iPad編】ドキュメントとミートはオススメ。GoogleWorkspaceをiPadでどこまで使えるか調べてみた。後編【GoogleWorkspace #67】
+- `SblPwH990YI` ＜G神からの挑戦状#4＞ Gmail基本編10問【GoogleWorkspace #65】
+- `F8S_5BR3Sy8` 日程調整はもう不要。Googleカレンダーユーザー必見。無料で使える真打ち登場！【GoogleWorkspace #64】
+- `Z9rxKyCTCxY` 【リアル】社員の悩みを解決する方法。貴方は部下に正しいアドバイスができますか？
+- `ewTp60mWViw` [Shocking] You can use Excel shortcuts in spreadsheets too! Shortcut Encyclopedia: Spreadsheets E...
+- `1QyG5ztMM0Y` 【意思決定の手引き】意思決定を言語化して大解説。できるビジネスマンの必須能力。
+- `P6P47btolRU` 【GoogleWorkspace】2021年8+9月アップデート最新情報。チャットルームとカレンダーの連携強化に注目。【GoogleWorkspace #61】
+- `uSu8ag2VuaY` Basic techniques for consolidating information in a spreadsheet. Data extraction and integration ...
+- `0zPKdtVuu3s` 従業員情報の管理＋研修システムをイチからつくる。これぞGoogleフォームの真髄。【Google Workspace #59】
+- `qnWHTpBVIQU` 【後編】G神厳選のショートカット集。Googlカレンダー・ドライブ・ミート編【Google Workspace #58】
+- `nHQ0ostYiFU` 【前編】G神厳選のショートカット集。GooglChromeとGmail編【Google Workspace #57】
+- `Iiewbep4cJ4` [Big Reveal] Revealing the contents of G-God's smartphone. How to use Google Workspace on your sm...
+- `mjvd1_VNMpc` The love of his mentor. The four lessons he learned to grow that became the foundation for the pr...
+- `Q6NIwx4j_3E` [Surprisingly unknown] 7 amazing tips for mastering Google Docs. [Google Workspace #54]
+- `Qf2AR-Zg-lk` 【意外と知らない】Googleスライドを使いこなす７つのスゴ技。【GoogleWorkspace #53】
+- `9m4DLIeQVnI` ＜G神からの挑戦状#2＞ Googleスライド初級編10問【Google Workspace #52】
+- `d21lqG4YvxY` 【GoogleWorkspace】2021年7月アップデート最新情報。アプリ間の連携強化が加速中。【GoogleWorkspace #51】
+- `L2hJkz9CNqQ` 【お手軽】資料のクオリティをワンランクアップさせるおすすめツール4選。
+- `zOQK9QldM64` 新企画＜G神からの挑戦状#1＞ Googleスプレッドシート初級編10問【Google Workspace #50】
+- `06FMcR-Muqg` How to Use Google Classroom for Business. G-God's Original Way to Use It Revealed. | Human Resour...
+- `48kID-Cocrs` 【一目でわかる】請求・入金管理シートをGoogleスプレッドシートでイチから作る。経理やフリーランスの方は必見。【GoogleWorkspace #48】
+- `CbTBERh-FEA` 社内研修のコンテンツサイトをイチからつくる。業務マニュアルは動画コンテンツで共有しよう。【GoogleWorkspace #46】
+- `jUk1vfde1Vk` 【G神の掟】GoogleChromeの時短術5選。基本の使い方から便利な設定までを公開。【Google Workspace#45】
+- `CA8n18l7kcA` 【ついに】GoogleWorkspaceの新機能情報続出!! G神がこれからのWorkspaceを解説。−Google開発者向けイベント2021年速報−【Google Workspace#44】
+- `GLAeKAccZuM` 成長できない本当の原因は「○○」にあった。明日から成長するために見つめ直すこと。
+- `ir1zUqDXJyM` [G God's Lament] The "true use" of Google Drive that 99% of people don't know. Introducing two Go...
+- `iQwX5JnmvjE` 打倒パワポ！GoogleスライドでG神流お洒落なプレゼン資料の作り方。【Google Workspace #42】
+- `mCYW7GiXo8I` 【フリーランス必見】ポートフォリオサイトからQRコード付き名刺まで15分で作る。Googleサイトを簡単に使いこなそう。【Google Workspace#39】
+- `n5bijOiy6jw` 絶対に集中できないリモート会議（笑）もはやカオスな体験談。
+- `z_N2WauRPGc` GoogleWorkspaceユーザーが最も困ることを解消。マイクロソフトオフィスとの互換性問題はこれで解決。【GoogleWorkspace#38】
+- `ZVH6XGSuh6U` [Super Practical] Practical ways to use Google Docs. We'll teach you how to quickly correct docum...
+- `Y6eYcVQ6kAI` How to write meeting minutes that will win trust. I'll condense my 3,000 hours of hellish experie...
+- `TCM0u25zLgQ` 時代遅れの会社が変わった理由。業務効率を高めた２つの思考。【G神思考】
+- `kZ278DhGjdg` 売上管理を自動連携して可視化せよ。Googleスプレッドシートでイチからつくるやり方全てお見せします。【Google Workspace #34】
+- `WEyLvjJu_vo` 【渡辺将基】新R25編集長の天才的なコミュニケーション能力の裏側を勝手に解説してみた。
+- `nbh1ORpDuUY` ZOOM楽しい使い方。メイクやお洒落な動画背景からアバターまでをフル活用。
+- `Wr9l4Md-vVI` Googleスライドでプレゼン資料を効率的に作るための便利技4選【GoogleWorkspace #33】
+- `nHNYY2LgAfk` 【さすがGoogle】リモートデスクトップで家から会社PCへスマホでもアクセス可能。社内サポートセンターも構築できる最強のツール。【GoogleWorkspace #32】
+- `_y_-JYM8MoE` 【効果抜群】Googleアプリの意外と知らないG神厳選の小技7選。【GoogleWorkspace #31】
+- `WRmNLowTa94` 【これで解決】誰も傷つかずに怒る方法。すぐ怒る人も、怒れない人も必見。
+- `mjcF6qy6Ye0` さよならZoom。GoogleMeetに移行せよ。正直めっちゃ使いやすい。【Google Workspace #30】
+- `Z_zQDNSU2jQ` 【悩み解決】PDF編集の神ツール。超簡単でしかも無料。その名も「i Love PDF」
+- `zHtm07YtNC8` Googleの社内掲示板機能と奇跡の検索ツールがそこにあった。【Google Workspace #28】
+- `qADwz3oxrIM` [No more meeting materials] Save time by linking Google Slides instead of creating them. [Google ...
+- `DHMqofroOCY` [Go paperless with Google Drive] 3 recommended integration methods from G-God: ScanSnap/Adobe Sca...
+- `_0_bxNKs-mM` 【超便利】Googleグループでチームのアドレスをつくり業務を効率化せよ。【Google Workspace #25】
+- `W4YfX5j9S7E` [Essential for Work] Carefully Selected by G-God. 6 Basics for Spreadsheet Productivity [Google W...
+- `7sEf5bCXI8s` 【エクセルVSスプレッドシート】印刷しやすいのはどっちだ!?超簡単な印刷設定教えます!!【Google Workspace #23】
+- `GcGWsfGg3XM` [Facilitator's Secrets Part 2] Meetings are held to decide the next action
+- `gIe3yWATtLk` 【ファシリテーターの極意 前編】マッキンゼーの先輩から教わった超生産的な会議の仕方。
+- `xUz82_O-kdY` [Google Keep is surprisingly useful] Everything from the basics to amazing tricks you can use at ...
+- `9DoYFPCjxyQ` 【平石直之アナ】ひろゆき氏をコントロールできる世界にひとりのアナウンサー。その凄すぎる手腕を解説します。ABEMAプライムアナウンサー平石直之氏
+- `97sWHIInb5o` 【徹底活用】Googleカレンダーのグループカレンダー機能をハックせよ！重要な権限設定から共有まで詳しく実演【Google Workspace #20】
+- `rBgMf9Bx1kA` 【3つの知識】誰でもコンサル目線で会社を改善するために必要な知識とは。
+- `KtctR31l_Vs` How to transfer your Google data from a free account to Google Workspace. [Google Workspace #19]
+- `XaIYOR7AAaA` ゼロから作るGoogle Workspaceアカウントの作り方。登録から決済するところまで全て見せます。【Google Workspace #18】
+- `C3fQ2RLezZU` コンサル時代に徹底的に叩き込まれたお金の使い方【自己投資】
+- `JQqPQV-vbYc` [Powerful Shortcuts] Carefully selected shortcuts used by the G-Gods of Gmail and Google Calendar...
+- `0tSKDmIttPY` 【超簡単】Googleスプレッドシートでガントチャートをイチからつくる。Google Workspaceの大活用。【Google Workspace #16】
+- `q8yth0shLQg` 【超重要】プレゼン資料作成の鉄の掟。コンサル時代の教訓をシェア
+- `Im3bDbRHXGE` モチベーションが上がらない原因【視聴者回答】
+- `f5SBu_QOaO0` 【超速い】コンサル時代に最初に学んだパワポのショートカット5選。
+- `LlvI2q66M2w` 【web会議の新定番】最強のweb会議ツールを発見。GoogleWorkspaceのJamboard。基本から活用まですべて公開。【Google Workspace #15】
+- `-ej-zR1JNUQ` 【心地良い】孫正義氏の心を掴むスピーチの秘密は「強調の仕方」にあり。
+- `Jrw6mKbYSK8` 【300万円で会社を買う前に見てほしい】個人M&Aを成功させるために気をつけること
+- `hueGb6SvcFw` G suiteからGoogle Workspaceへの変更点はこれだ。【Google Workspace #14】
+- `G9ytUlEun7U` 【徹底解説】橋下徹氏のコミュニケーション力。ひろゆき氏も懐くその手法を元コンサルタントが説明します。
+- `ATKPISVkJwc` 【ひろゆき】論破力の裏側の仕組みを大解説。
+- `e7Sz3opCD2g` 【初心者向け】日本一わかりやすいGmailとは。「なんか、わかりにくい」はこれで解決されます。【Google Workspace #13】
+- `fBci5NNRCYg` "Crawling out of obsoleteness" My life as a dairyman - Self-introduction by Ryo Nishihara, the se...
+- `j7wzxlXlsRg` 【絶対に守ろう】スプレッドシートで絶対に使うべき機能3選。【Google Workspace #12】
+- `pe2RSUaFFqs` [Demonstration] A truly unacceptable job seeker comes to a milk shop.
+- `oRHzGfjUSPI` 見たい情報は一つにまとめる。面倒くさがり屋のためのGoogleサイト【Google Workspace #11】
+- `Ft9i0eR0dRA` 【実演】絶対にやってはいけない電話応対。4つの〇〇人間にあなたは当てはまっていないか？
+- `An5k1YvDrrQ` 本当に使える最強の業務マニュアルの作り方。Googleアプリを連携してスマホ時代に対応せよ!!【Google Workspace #10】
+- `MVYLDsOlOFM` 営業はクロージングで全てが台無し？その場でご契約を頂く正しいやり方 | 営業編［24メソッド］ #05
+- `wKZ_J7x4KCM` 契約目前。営業マンのプレゼンは貴方だけへのワンメッセージで伝えろ。| 営業編［24メソッド］ #04
+- `OyyuFaYlc3Q` 商品は売り込むな。お客様に正しい提案をするためには？課題解決型営業のススメ| 営業編［24メソッド］ #03
+- `nR27XZ-KrJ8` 初対面で信頼を獲得する営業のやり方 | 営業編［24メソッド］ #02
+- `R6r1eogMeGk` 営業未経験から1流の営業マンに！元コンサル社長の秘密24メソッドとは| 営業編［24メソッド］ #01
+- `vFa3FgnW77U` 視聴者リクエスト編：Googleフォームとスプレッドシートを連携させて請求書自動発行システムを作ってみた【Google Workspace  #9】
+- `aoRPcdE-qTI` Use Google Calendar to consolidate web meetings, document sharing, and to-do management all in on...
+- `H2W3l_3eILo` 【G Suiteのビジネス活用】Googleマップ最強の活用術。マイマップを駆使して営業攻略に活用せよ！【Google Workspace #7 】
+- `1hCzvwCaMUI` 【初心者向け】エクセル、スプレッドシートの基本は関数！超簡単な基礎を教えます！【Google Workspace #6】
+- `7URBpdm3q_s` 【初心者向け】簡単1分!!まずは無料でGoogleアカウントをつくって世界を広げよう。【Google Workspace #3】
+- `IQ1ho8LcF1w` Googleスプレッドシートで作る、簡単todoリストの作り方!【Google Workspace #4】
+- `gdYHE762atk` Manage inventory on your smartphone! Create it in 5 minutes using Google! Say goodbye to Excel! [...
+- `Orby08QhQYs` ビジネスで使えるGoogle活用術を大公開。スプレットシート・スライド・フォーム・グーグルサイトはこう使え！！【Google Workspace #2】
+- `I29p7P11lag` 1000x efficiency increase!? Goodbye Microsoft! Welcome to the world of Google Workspace!! [Google...
+- `mqTLoR4l-GM` 【牛乳屋さんの社長の独り言】中小企業の代表の心得３つ！
+- `3VqwMRw7qw8` 【チャット疲れから脱したい！！】チャットで使える文章の書き方、伝え方
+- `9V8Qd2msO4U` コミュニケーション能力を高めて人付き合い上手になろう
+- `ll4IZ8TrGH8` 絶対に外せない問題解決の3つの基本。牛乳屋さん社長の奮闘記
+- `kv8nkGMEol4` 牛乳屋2代目社長が語る!!デジタル化時代だからこそ絶対に外せない、3つのビジネスコミュニケーションマナー
+- `ck8JwIeFvkc` 【必見】ビジネス上での価値を高める裏技
+- `fsCLThH25p4` 【これだけ】会議（ミーティング）に参加するための心得三ヶ条
+- `OH9koetFDD8` 【モチベーション】仕事をする上でのモチベーションの公式が判明！？零細企業社長の独り言
+- `6u_hejUIQ6g` 名もなき零細企業の牛乳屋さんが実際に採用できたツールを紹介！！
+- `ShPwp_-rLaI` 【給料の考え方】あなたの給料は適正ですか？
+- `RPcjkFzCBrA` 【結論から話すとは】残念なビジネスマン「ケドケド人間」になってませんか
+- `j1PqCBOW2vM` The tragedy of the second-generation president of a small business. Embezzlement, attempted black...
+- `7xz993JUJNQ` 「社長いくらもらってますか？」会社の実態を知るために、勇気を出そう。
+- `Nzy4zPb4QKU` 【コロナ禍の飲食店のリアル】ハワイアンカフェ プウホヌアで話を聞いてきました
+- `6UJy6pGVG-o` 【牛乳屋さんのリアルな社内会議】しゃちょうがマジックに挑戦!!果たして結果やいかに!?
+- `LRSzEcwvi0U` 【転職希望者向け】中途採用に向けて、自分の現在の位置をかんがえる
+- `6ZLEck77Jqc` 【中小企業必見】牛乳屋さんも使うクラウドツールとは
+- `16CUG-99eEw` 【牛乳屋さんをリフォーム】遅刻してきた社長の意味不明発言連発!!ちゃんと紹介できるのか!?
+- `UpkP6Dw28WM` コロナウイルスに負けない!!牛乳屋さんがR-1乳酸菌を説明してみた
+- `FOUWwBybGz4` 【ゆるビジ】中小企業社長が実践!!「怒り」のコントロールとは
+- `Yo1IWySlAG8` [Super Fast] Former consultant teaches you how to use PowerPoint super fast through training
+- `DUnpWEsgfyc` 誰もやりたがらない仕事"牛乳屋さん"を、コンサルタントやめて引き継いだ理由
+- `-4XEmRHfvZo` 【ゆるビジ】テーマ：行動する（行動する為に諦めろ！？）
+- `4XwLihFdhZA` [Yuru Biz] Beware of discomfort in your buttocks. How to work and grow at work
+- `4VvRpiub8v4` 【明日から使える】問題解決のポイント
+- `kKKMG2j_6Og` 【明日から使える】すれ違いをなくす方法
+- `7s8vRFN0SMM` 【明日から使える】ToDo
+- `aTZcl-9BJ-s` 【明日から使える】ビジネスコミュニケーションの5W1H
+- `Tf8qjiM2fKE` 【明日から使える】ビジネスコミュニケーション- 基本編 -
+- `MvOJbrBdfVg` 【明日から使えるPDCA】- Action編 -
+- `T3MbzkqysUU` 【明日から使えるPDCA】- Do編 -
+- `vhoSUmHr6hE` [PDCA you can use starting tomorrow] - Plan Edition -
