@@ -56,6 +56,9 @@ function lectureText(video) {
     lecture.difficulty,
     lecture.audience,
     lecture.recommendedUse,
+    video.review?.status,
+    video.review?.priority,
+    ...(video.review?.reasons || []),
     ...(lecture.outcomes || []),
     ...(lecture.deliverables || []),
     ...(lecture.features || []),
@@ -137,6 +140,8 @@ function initElements() {
     lectureList: $("#lectureList"),
     catalogCount: $("#catalogCount"),
     catalogPanel: $("#catalogPanel"),
+    reviewCount: $("#reviewCount"),
+    reviewPanel: $("#reviewPanel"),
     toolCards: $("#toolCards"),
     revisionGroups: $("#revisionGroups"),
     qualityPanel: $("#qualityPanel"),
@@ -225,6 +230,7 @@ function renderStatic() {
   renderToolFilters();
   renderUseCaseFilters();
   renderOverview();
+  renderReview();
   renderTools();
   renderLatest();
   renderQuality();
@@ -385,6 +391,7 @@ function render() {
   renderVideos();
   renderLectures();
   renderCatalog();
+  renderReview();
 }
 
 function renderActiveSummary() {
@@ -448,6 +455,7 @@ function renderVideos() {
 function renderOverview() {
   const data = state.data;
   const quality = data.transcriptQuality || {};
+  const reviewSummary = data.reviewSummary || {};
   const topModules = data.lectureModules
     .slice(0, 8)
     .map(
@@ -526,6 +534,7 @@ function renderOverview() {
       ${stat("機能カタログ", `${(data.featureCatalog || []).length}項目`, "扱える機能・操作を抽出")}
       ${stat("平均文字数", `${(quality.avgChars || 0).toLocaleString()}字`, `中央値 ${(quality.medianChars || 0).toLocaleString()}字`)}
       ${stat("字幕ソース", sourceText || "unknown", "YouTube字幕由来")}
+      ${stat("精査済み", `${reviewSummary.reviewed || 0}本`, `未精査 ${reviewSummary.unreviewed ?? data.videos.length}本`)}
     </section>
 
     <section class="handoff-guide">
@@ -538,6 +547,7 @@ function renderOverview() {
           <h4>見る順番</h4>
           <ol>
             <li>全体マップで、チャンネルのテーマ比率を確認</li>
+            <li>精査状況で、未精査/精査優先の本数を確認</li>
             <li>講義候補で、どの講義を作れそうか確認</li>
             <li>機能カタログで、具体的な機能・成果物を確認</li>
             <li>必要な動画だけ詳細/Markdown全文/YouTubeで確認</li>
@@ -556,7 +566,7 @@ function renderOverview() {
           <h4>注意点</h4>
           <ul>
             <li>文字起こしはYouTube字幕由来で、人手校正済みではありません</li>
-            <li>講義候補は機械抽出なので、最終採用前に動画詳細を確認してください</li>
+            <li>講義候補は機械抽出なので、精査済みになるまで最終採用しないでください</li>
             <li>短文・告知寄り動画は品質確認タブで分けて見てください</li>
             <li>社外共有前の最終資料化には、別途講義構成への落とし込みが必要です</li>
           </ul>
@@ -677,6 +687,7 @@ function lectureCard(video) {
     `<span class="tag use">${escapeHtml(lecture.type || "")}</span>`,
     `<span class="tag">${escapeHtml(lecture.difficulty || "")}</span>`,
   ];
+  if (video.review) tags.push(reviewStatusTag(video.review));
   return `
     <article class="lecture-card">
       <div class="lecture-card-head">
@@ -779,12 +790,124 @@ function catalogCard(item, total) {
   `;
 }
 
+function reviewStatusTag(review) {
+  if (!review) return "";
+  const className = review.status === "精査済み" ? "review-done" : review.priority === "高" ? "review-high" : review.priority === "中" ? "review-mid" : "review-low";
+  return `<span class="tag ${className}">${escapeHtml(review.status)} / ${escapeHtml(review.priority)}</span>`;
+}
+
+function renderReview() {
+  if (!state.data) return;
+  const summary = state.data.reviewSummary || {};
+  const rows = filteredVideos()
+    .filter((video) => video.review)
+    .sort((a, b) => (b.review.priorityScore || 0) - (a.review.priorityScore || 0) || b.date.localeCompare(a.date));
+  els.reviewCount.textContent = `精査済み ${summary.reviewed || 0}本 / 未精査 ${summary.unreviewed || rows.length}本`;
+
+  const statusRows = (summary.statusCounts || [])
+    .map(
+      (item) => `
+        <div class="ratio-row">
+          <span>${escapeHtml(item.name)}</span>
+          <strong>${item.count}本</strong>
+        </div>
+      `,
+    )
+    .join("");
+  const priorityRows = (summary.priorityCounts || [])
+    .map(
+      (item) => `
+        <div class="ratio-row">
+          <span>${escapeHtml(item.name)}</span>
+          <strong>${item.count}本</strong>
+        </div>
+      `,
+    )
+    .join("");
+  const visible = rows.slice(0, state.visibleLimit);
+  const queue = visible.map(reviewCard).join("");
+
+  els.reviewPanel.innerHTML = `
+    <section class="review-warning">
+      <h4>現在の状態</h4>
+      <p>${escapeHtml(summary.note || "自動整理済みです。")}</p>
+      <div class="review-stats">
+        ${stat("精査済み", `${summary.reviewed || 0}本`, "手動確認済み")}
+        ${stat("未精査", `${summary.unreviewed ?? rows.length}本`, "自動整理のみ")}
+        ${stat("精査優先", `${summary.highPriority || 0}本`, "主教材/最新版/短文など")}
+        ${stat("字幕要確認", `${summary.needsQualityCheck || 0}本`, "短文・低密度")}
+      </div>
+    </section>
+    <section class="overview-columns">
+      <article class="overview-card">
+        <h3>ステータス別</h3>
+        <div class="ratio-table">${statusRows}</div>
+      </article>
+      <article class="overview-card">
+        <h3>優先度別</h3>
+        <div class="ratio-table">${priorityRows}</div>
+      </article>
+    </section>
+    <section>
+      <div class="results-head">
+        <div>
+          <h3>精査キュー</h3>
+          <p>${rows.length}本表示対象。優先度順に表示しています。</p>
+        </div>
+      </div>
+      <div class="review-list">${queue || `<div class="empty">該当するレビュー対象がありません。</div>`}</div>
+    </section>
+  `;
+
+  if (rows.length > state.visibleLimit) {
+    const button = document.createElement("button");
+    button.className = "button ghost";
+    button.textContent = `さらに表示 (${rows.length - state.visibleLimit}本)`;
+    button.addEventListener("click", () => {
+      state.visibleLimit += 80;
+      render();
+    });
+    els.reviewPanel.querySelector(".review-list").appendChild(button);
+  }
+
+  els.reviewPanel.querySelectorAll("[data-detail-id]").forEach((button) => {
+    button.addEventListener("click", () => openDetail(button.dataset.detailId));
+  });
+}
+
+function reviewCard(video) {
+  const review = video.review || {};
+  const reasons = (review.reasons || [])
+    .map((reason) => `<span class="tag">${escapeHtml(reason)}</span>`)
+    .join("");
+  return `
+    <article class="review-card">
+      <div class="review-card-head">
+        <div>
+          <div class="video-meta">
+            <span>${escapeHtml(video.date)}</span>
+            <span>${escapeHtml(video.primaryToolName)}</span>
+            <span>${video.transcriptChars.toLocaleString()}字</span>
+            <span>${video.charsPerMinute || "-"}字/分</span>
+          </div>
+          <h4>${highlight(video.title)}</h4>
+          <div class="tag-row">${reviewStatusTag(review)}<span class="tag">スコア ${review.priorityScore || 0}</span></div>
+        </div>
+        <button class="detail-button" data-detail-id="${video.id}">詳細</button>
+      </div>
+      <p class="video-summary">${escapeHtml(review.nextAction || "")}</p>
+      <div class="tag-row">${reasons}</div>
+    </article>
+  `;
+}
+
 function videoCard(video) {
   const tags = [
     `<span class="tag tool">${escapeHtml(video.primaryToolName)}</span>`,
     ...video.useCaseNames.slice(0, 3).map((name) => `<span class="tag use">${escapeHtml(name)}</span>`),
   ];
   if (latestIds.has(video.id)) tags.push(`<span class="tag">最新版候補</span>`);
+  if (video.review) tags.push(reviewStatusTag(video.review));
   return `
     <article class="video-card">
       <div>
@@ -1004,6 +1127,7 @@ function openDetail(videoId) {
   const video = state.data.videos.find((item) => item.id === videoId);
   if (!video) return;
   const lecture = video.lecture || {};
+  const review = video.review || {};
   const relatedTools = video.toolNames.map((name) => `<span class="tag tool">${escapeHtml(name)}</span>`).join("");
   const useCases = video.useCaseNames.map((name) => `<span class="tag use">${escapeHtml(name)}</span>`).join("");
   els.detailContent.innerHTML = `
@@ -1053,6 +1177,20 @@ function openDetail(videoId) {
                 ${renderList([...(lecture.casePoints || []), ...(lecture.nonToolPoints || [])], "補足論点なし")}
               </div>
             </div>
+          </section>
+          <section class="detail-review">
+            <div class="section-title">精査状況</div>
+            <div class="tag-row">
+              ${reviewStatusTag(review)}
+              <span class="tag">スコア ${review.priorityScore || 0}</span>
+              <span class="tag">${escapeHtml(review.confidence || "未精査")}</span>
+            </div>
+            <p class="review-note">文字起こしはYouTube字幕由来です。精査済みのみ、全文確認と要約補完を反映しています。</p>
+            <p class="video-summary">${escapeHtml(review.nextAction || "")}</p>
+            ${renderList(review.reasons || [], "理由なし")}
+            ${review.finalSummary ? `<h5>精査済み要約</h5><p class="video-summary">${escapeHtml(review.finalSummary)}</p>` : ""}
+            ${review.verifiedPoints?.length ? `<h5>確認済みポイント</h5>${renderList(review.verifiedPoints)}` : ""}
+            ${review.corrections?.length ? `<h5>自動整理からの修正点</h5>${renderList(review.corrections)}` : ""}
           </section>
           <div class="snippet-list">${renderSnippets(video)}</div>
           <h4>文字起こしプレビュー</h4>

@@ -16,6 +16,7 @@ MANIFEST = BASE / "manifest.json"
 OUT = BASE / "seminar_browser"
 DATA = OUT / "data"
 DOCS = OUT / "docs"
+REVIEW_OVERRIDES = BASE / "review_overrides.json"
 
 
 TOOL_DEFS = [
@@ -475,6 +476,21 @@ def load_rows() -> list[dict]:
             " ".join([row.get("title", ""), row["transcript"]])
         )
     return rows
+
+
+def load_review_overrides() -> dict[str, dict]:
+    if not REVIEW_OVERRIDES.exists():
+        return {}
+    data = json.loads(REVIEW_OVERRIDES.read_text(encoding="utf-8"))
+    if isinstance(data, dict) and "reviews" in data:
+        items = data["reviews"]
+    elif isinstance(data, list):
+        items = data
+    elif isinstance(data, dict):
+        items = [{"id": key, **value} for key, value in data.items()]
+    else:
+        items = []
+    return {item["id"]: item for item in items if item.get("id")}
 
 
 def count_keywords(blob: str, keywords: list[str]) -> int:
@@ -958,6 +974,140 @@ def build_transcript_quality(videos: list[dict]) -> dict:
     }
 
 
+CORE_REVIEW_TOOLS = {
+    "overview",
+    "gemini_ai",
+    "gmail",
+    "chat",
+    "meet",
+    "calendar",
+    "drive",
+    "docs",
+    "sheets",
+    "slides",
+    "forms",
+    "sites",
+    "appsheet",
+    "looker",
+    "admin_security",
+    "business_dx",
+}
+
+
+def infer_review_status(video: dict, latest_ids: set[str], overrides: dict[str, dict]) -> dict:
+    override = overrides.get(video["id"])
+    if override:
+        return {
+            "status": "精査済み",
+            "priority": override.get("priority", "高"),
+            "priorityScore": override.get("priorityScore", 100),
+            "reviewedAt": override.get("reviewedAt", ""),
+            "reviewer": override.get("reviewer", "Codex"),
+            "confidence": override.get("confidence", "要確認"),
+            "reasons": override.get("reasons", ["手動精査済み"]),
+            "finalSummary": override.get("finalSummary", ""),
+            "verifiedPoints": override.get("verifiedPoints", []),
+            "corrections": override.get("corrections", []),
+            "nextAction": override.get("nextAction", "講義採用可否を判断する"),
+        }
+
+    title = video["title"]
+    score = 0
+    reasons = []
+    if contains_any(title, ["完全版", "保存版", "決定版", "教科書", "全て", "まるっと"]):
+        score += 35
+        reasons.append("網羅解説系のため講義主教材になりやすい")
+    if contains_any(title, ["最新", "アップデート", "2026", "2025"]):
+        score += 16
+        reasons.append("最新性確認が必要")
+    if video["id"] in latest_ids:
+        score += 16
+        reasons.append("最新版候補")
+    if video["primaryTool"] in CORE_REVIEW_TOOLS:
+        score += 10
+        reasons.append("主要テーマ")
+    if video["transcriptChars"] >= 10000:
+        score += 8
+        reasons.append("長尺/情報量が多い")
+    if video["transcriptChars"] < 2000:
+        score += 22
+        reasons.append("短文・告知寄りの可能性があり要確認")
+    if video.get("charsPerMinute", 0) and video["charsPerMinute"] < 260:
+        score += 15
+        reasons.append("文字密度が低く字幕欠落/短尺の確認が必要")
+    if video["lecture"]["type"] in {"ハンズオン講義", "事例研究"}:
+        score += 8
+        reasons.append("手順/事例の正確性確認が必要")
+    if video["date"] >= "2025-01-01":
+        score += 6
+        reasons.append("近年動画")
+
+    if score >= 55:
+        priority = "高"
+        status = "精査優先"
+    elif score >= 34:
+        priority = "中"
+        status = "精査待ち"
+    else:
+        priority = "低"
+        status = "未精査（自動整理）"
+
+    return {
+        "status": status,
+        "priority": priority,
+        "priorityScore": score,
+        "reviewedAt": "",
+        "reviewer": "",
+        "confidence": "未精査",
+        "reasons": unique(reasons, 6),
+        "finalSummary": "",
+        "verifiedPoints": [],
+        "corrections": [],
+        "nextAction": "Markdown全文とYouTubeを照合して、要約・機能・手順・最新性を確定する",
+    }
+
+
+def build_review_summary(videos: list[dict]) -> dict:
+    status_counter = Counter(video["review"]["status"] for video in videos)
+    priority_counter = Counter(video["review"]["priority"] for video in videos)
+    reviewed = [video for video in videos if video["review"]["status"] == "精査済み"]
+    high = [video for video in videos if video["review"]["priority"] == "高" and video["review"]["status"] != "精査済み"]
+    needs_quality = [
+        video
+        for video in videos
+        if video["transcriptChars"] < 2000 or (video.get("charsPerMinute", 0) and video["charsPerMinute"] < 260)
+    ]
+    queue = sorted(
+        [video for video in videos if video["review"]["status"] != "精査済み"],
+        key=lambda video: (video["review"]["priorityScore"], video["date"]),
+        reverse=True,
+    )
+    def brief(video: dict) -> dict:
+        return {
+            "id": video["id"],
+            "date": video["date"],
+            "title": video["title"],
+            "url": video["url"],
+            "primaryToolName": video["primaryToolName"],
+            "transcriptChars": video["transcriptChars"],
+            "charsPerMinute": video.get("charsPerMinute", 0),
+            "review": video["review"],
+        }
+
+    return {
+        "total": len(videos),
+        "reviewed": len(reviewed),
+        "unreviewed": len(videos) - len(reviewed),
+        "highPriority": len(high),
+        "needsQualityCheck": len(needs_quality),
+        "statusCounts": [{"name": name, "count": count} for name, count in status_counter.most_common()],
+        "priorityCounts": [{"name": name, "count": count} for name, count in priority_counter.most_common()],
+        "queue": [brief(video) for video in queue[:120]],
+        "qualityQueue": [brief(video) for video in sorted(needs_quality, key=lambda video: (video["transcriptChars"], video.get("charsPerMinute", 0)))[:80]],
+        "note": "現時点の精査状況です。未精査（自動整理）は、人間レビュー相当の全文精読・動画照合が未完了であることを意味します。",
+    }
+
+
 def build_revision_groups(videos: list[dict]) -> list[dict]:
     patterns = [
         ("Google Workspace最新情報", ["最新情報", "アップデート"], ["overview", "gemini_ai"]),
@@ -1087,6 +1237,51 @@ def make_docs(tool_summaries: list[dict], videos: list[dict], revision_groups: l
         lines.append(f"- {video['date']} `{video['id']}` {video['title']} ({video['transcriptChars']}字)")
     (DOCS / "quality_report.md").write_text("\n".join(lines), encoding="utf-8")
 
+    review_summary = build_review_summary(videos)
+    lines = [
+        "# 精査状況・レビューキュー",
+        "",
+        "このファイルは、560本の自動整理結果を人間レビュー相当で精査していくための管理表です。",
+        "",
+        f"- 対象動画: {review_summary['total']}本",
+        f"- 精査済み: {review_summary['reviewed']}本",
+        f"- 未精査: {review_summary['unreviewed']}本",
+        f"- 精査優先: {review_summary['highPriority']}本",
+        f"- 字幕/短文確認が必要: {review_summary['needsQualityCheck']}本",
+        "",
+        "## ステータス別",
+        "",
+    ]
+    for item in review_summary["statusCounts"]:
+        lines.append(f"- {item['name']}: {item['count']}本")
+    lines.extend(["", "## 優先度別", ""])
+    for item in review_summary["priorityCounts"]:
+        lines.append(f"- {item['name']}: {item['count']}本")
+    lines.extend([
+        "",
+        "## 精査チェックリスト",
+        "",
+        "- Markdown全文を読み、動画の主旨が自動要約と一致するか確認する",
+        "- YouTube本編または字幕本文で、機能・手順・成果物が本当に話されているか確認する",
+        "- 最新版動画があるテーマは、古い動画の内容を主教材にしない",
+        "- 字幕誤変換・短文・告知動画は、講義素材として使うか慎重に判断する",
+        "- 精査済みにする場合は、最終要約・確認済みポイント・修正点をreview_overrides.jsonへ記録する",
+        "",
+        "## 精査優先キュー",
+        "",
+    ])
+    for video in review_summary["queue"][:80]:
+        review = video["review"]
+        lines.append(f"### {video['date']} `{video['id']}` {video['title']}")
+        lines.append(f"- URL: {video['url']}")
+        lines.append(f"- 主ツール: {video['primaryToolName']}")
+        lines.append(f"- 優先度: {review['priority']} / スコア: {review['priorityScore']}")
+        lines.append(f"- 状態: {review['status']}")
+        lines.append(f"- 理由: {'、'.join(review['reasons'])}")
+        lines.append(f"- 次アクション: {review['nextAction']}")
+        lines.append("")
+    (DOCS / "review_status.md").write_text("\n".join(lines), encoding="utf-8")
+
     lines = [
         "# 講義候補一覧・全560本対応",
         "",
@@ -1160,6 +1355,7 @@ def make_docs(tool_summaries: list[dict], videos: list[dict], revision_groups: l
 
 def main() -> None:
     rows = load_rows()
+    review_overrides = load_review_overrides()
     tool_name = {tool["id"]: tool["name"] for tool in TOOL_DEFS}
     use_case_name = {use_id: name for use_id, name, _ in USE_CASE_DEFS}
 
@@ -1240,8 +1436,17 @@ def main() -> None:
     use_summaries.sort(key=lambda u: u["videoCount"], reverse=True)
 
     revision_groups = build_revision_groups(videos)
+    latest_ids = {group["latest"]["id"] for group in revision_groups}
+    for tool_summary_seed in TOOL_DEFS:
+        matched_for_tool = [video for video in videos if video["primaryTool"] == tool_summary_seed["id"]]
+        if matched_for_tool:
+            latest_ids.add(sorted(matched_for_tool, key=lambda video: video["date"], reverse=True)[0]["id"])
+    for video in videos:
+        video["review"] = infer_review_status(video, latest_ids, review_overrides)
+
     lecture_summaries = build_lecture_summaries(videos)
     transcript_quality = build_transcript_quality(videos)
+    review_summary = build_review_summary(videos)
 
     DATA.mkdir(parents=True, exist_ok=True)
     payload = {
@@ -1256,6 +1461,7 @@ def main() -> None:
         "videos": videos,
         "revisionGroups": revision_groups,
         "transcriptQuality": transcript_quality,
+        "reviewSummary": review_summary,
         **lecture_summaries,
         "seminarAngles": [
             {
