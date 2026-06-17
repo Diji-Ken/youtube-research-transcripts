@@ -107,6 +107,7 @@ h3 {
 .card-sub,
 .small,
 .video-summary,
+.review-note,
 .quality-note {
   color: var(--muted);
   font-size: 13px;
@@ -372,7 +373,7 @@ a:focus-visible {
 
 .overview-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(130px, 1fr));
+  grid-template-columns: repeat(5, minmax(130px, 1fr));
   gap: 10px;
 }
 
@@ -565,6 +566,29 @@ a:focus-visible {
   color: #74500e;
 }
 
+.tag.review-high {
+  border-color: rgba(166, 63, 63, 0.32);
+  background: #fae8e2;
+  color: #8a2d2d;
+}
+
+.tag.review-mid {
+  border-color: rgba(154, 106, 20, 0.32);
+  background: #f6edda;
+  color: #74500e;
+}
+
+.tag.review-low {
+  background: #eef0f0;
+  color: #4d5358;
+}
+
+.tag.review-done {
+  border-color: rgba(13, 118, 110, 0.36);
+  background: #e5f2ef;
+  color: #0a5b55;
+}
+
 .video-list {
   display: grid;
   gap: 10px;
@@ -574,6 +598,7 @@ a:focus-visible {
 .lecture-card,
 .lecture-stat-card,
 .catalog-card,
+.review-card,
 .tool-card,
 .revision-card,
 .quality-card {
@@ -584,9 +609,51 @@ a:focus-visible {
 }
 
 .lecture-list,
-.catalog-list {
+.catalog-list,
+.review-list,
+.review-panel {
   display: grid;
   gap: 12px;
+}
+
+.review-warning {
+  border: 1px solid rgba(166, 63, 63, 0.28);
+  border-radius: var(--radius);
+  background: #fff7f4;
+  padding: 14px;
+}
+
+.review-warning h4 {
+  margin: 0 0 6px;
+}
+
+.review-warning p {
+  margin: 0 0 12px;
+  color: #6d3b35;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.review-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.review-card {
+  padding: 15px;
+}
+
+.review-card-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.review-card h4 {
+  margin: 0 0 8px;
+  font-size: 16px;
+  line-height: 1.42;
 }
 
 .lecture-stats {
@@ -968,7 +1035,8 @@ mark {
   gap: 16px;
 }
 
-.detail-lecture {
+.detail-lecture,
+.detail-review {
   margin-top: 14px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -976,7 +1044,8 @@ mark {
   padding: 12px;
 }
 
-.detail-lecture h4 {
+.detail-lecture h4,
+.detail-review h5 {
   margin: 0 0 8px;
 }
 
@@ -1024,6 +1093,8 @@ mark {
   .stats-grid,
   .tool-grid,
   .overview-grid,
+  .handoff-grid,
+  .review-stats,
   .lecture-stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1062,6 +1133,7 @@ mark {
   .overview-columns,
   .quality-columns,
   .overview-hero,
+  .review-stats,
   .lecture-stats,
   .lecture-grid,
   .detail-lecture-grid,
@@ -1073,7 +1145,8 @@ mark {
   }
 
   .lecture-card-head,
-  .catalog-card-head {
+  .catalog-card-head,
+  .review-card-head {
     display: grid;
   }
 
