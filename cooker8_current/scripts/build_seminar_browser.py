@@ -448,6 +448,22 @@ def parse_date(value: str) -> datetime:
         return datetime(1900, 1, 1)
 
 
+def parse_duration_minutes(value: str) -> float:
+    try:
+        parts = [int(part) for part in str(value or "").split(":")]
+    except ValueError:
+        return 0.0
+    if len(parts) == 3:
+        hours, minutes, seconds = parts
+        return hours * 60 + minutes + seconds / 60
+    if len(parts) == 2:
+        minutes, seconds = parts
+        return minutes + seconds / 60
+    if len(parts) == 1:
+        return parts[0] / 60
+    return 0.0
+
+
 def load_rows() -> list[dict]:
     rows = json.loads(MANIFEST.read_text(encoding="utf-8"))
     for row in rows:
@@ -895,6 +911,53 @@ def build_lecture_summaries(videos: list[dict]) -> dict:
     }
 
 
+def build_transcript_quality(videos: list[dict]) -> dict:
+    lengths = sorted(video["transcriptChars"] for video in videos)
+    full = [video for video in videos if video["transcriptChars"] > 0]
+    avg_chars = round(sum(lengths) / len(lengths)) if lengths else 0
+    if not lengths:
+        median_chars = 0
+    elif len(lengths) % 2:
+        median_chars = lengths[len(lengths) // 2]
+    else:
+        middle = len(lengths) // 2
+        median_chars = round((lengths[middle - 1] + lengths[middle]) / 2)
+    cpm_values = [video["charsPerMinute"] for video in videos if video.get("charsPerMinute")]
+    avg_cpm = round(sum(cpm_values) / len(cpm_values)) if cpm_values else 0
+    source_counter = Counter(video.get("transcriptSource") or "unknown" for video in videos)
+    buckets = [
+        ("800字未満", lambda x: x < 800),
+        ("800-1,999字", lambda x: 800 <= x < 2000),
+        ("2,000-4,999字", lambda x: 2000 <= x < 5000),
+        ("5,000-9,999字", lambda x: 5000 <= x < 10000),
+        ("10,000字以上", lambda x: x >= 10000),
+    ]
+    density_buckets = [
+        ("250字/分未満", lambda x: x < 250),
+        ("250-349字/分", lambda x: 250 <= x < 350),
+        ("350-449字/分", lambda x: 350 <= x < 450),
+        ("450字/分以上", lambda x: x >= 450),
+    ]
+    return {
+        "total": len(videos),
+        "withTranscript": len(full),
+        "sourceCounts": [{"name": name, "count": count} for name, count in source_counter.most_common()],
+        "avgChars": avg_chars,
+        "medianChars": median_chars,
+        "minChars": min(lengths) if lengths else 0,
+        "maxChars": max(lengths) if lengths else 0,
+        "avgCharsPerMinute": avg_cpm,
+        "lengthBuckets": [{"name": name, "count": sum(1 for value in lengths if test(value))} for name, test in buckets],
+        "densityBuckets": [{"name": name, "count": sum(1 for value in cpm_values if test(value))} for name, test in density_buckets],
+        "shortVideos": sorted(videos, key=lambda video: video["transcriptChars"])[:20],
+        "lowDensityVideos": sorted(
+            [video for video in videos if video.get("charsPerMinute") and video["charsPerMinute"] < 260],
+            key=lambda video: video["charsPerMinute"],
+        )[:20],
+        "note": "文字起こしはYouTube字幕ファイル由来です。全動画に本文がありますが、人手校正済みではないため誤変換や[音楽]などのノイズを含みます。",
+    }
+
+
 def build_revision_groups(videos: list[dict]) -> list[dict]:
     patterns = [
         ("Google Workspace最新情報", ["最新情報", "アップデート"], ["overview", "gemini_ai"]),
@@ -981,18 +1044,40 @@ def make_docs(tool_summaries: list[dict], videos: list[dict], revision_groups: l
         lines.append("")
     (DOCS / "latest_priority.md").write_text("\n".join(lines), encoding="utf-8")
 
+    transcript_quality = build_transcript_quality(videos)
     latest = sorted(videos, key=lambda v: v["date"], reverse=True)[:30]
     short = [v for v in videos if v["transcriptChars"] < 800]
+    source_text = ", ".join(f"{item['name']} {item['count']}本" for item in transcript_quality["sourceCounts"])
     lines = [
         "# 文字起こし品質チェック",
         "",
         f"- 対象動画: {len(videos)}本",
         f"- 文字起こしあり: {sum(1 for v in videos if v['transcriptChars'] > 0)}本",
+        f"- 文字起こしソース: {source_text}",
+        f"- 平均文字数: {transcript_quality['avgChars']:,}字",
+        f"- 中央値: {transcript_quality['medianChars']:,}字",
+        f"- 平均文字密度: {transcript_quality['avgCharsPerMinute']}字/分",
         f"- 800字未満の短い文字起こし: {len(short)}本",
+        "",
+        "## 文字数分布",
+        "",
+    ]
+    for bucket in transcript_quality["lengthBuckets"]:
+        lines.append(f"- {bucket['name']}: {bucket['count']}本")
+    lines.extend([
+        "",
+        "## 文字密度分布",
+        "",
+    ])
+    for bucket in transcript_quality["densityBuckets"]:
+        lines.append(f"- {bucket['name']}: {bucket['count']}本")
+    lines.extend([
+        "",
+        transcript_quality["note"],
         "",
         "## 最新30本",
         "",
-    ]
+    ])
     for video in latest:
         lines.append(f"- {video['date']} `{video['id']}` {video['title']} ({video['transcriptChars']}字)")
     lines.append("")
@@ -1083,6 +1168,8 @@ def main() -> None:
         tools, primary, use_cases = classify(row)
         primary_def = next(tool for tool in TOOL_DEFS if tool["id"] == primary)
         snippets = extract_snippets(row, primary_def["keywords"])
+        duration_minutes = parse_duration_minutes(row.get("duration", ""))
+        chars_per_minute = round(row["transcript_chars"] / duration_minutes) if duration_minutes else 0
         video = {
             "index": row["index"],
             "id": row["id"],
@@ -1092,6 +1179,8 @@ def main() -> None:
             "duration": row["duration"],
             "description": compact(row.get("description", ""), 700),
             "transcriptChars": row["transcript_chars"],
+            "transcriptSource": row.get("transcript_source", "unknown"),
+            "charsPerMinute": chars_per_minute,
             "tools": tools,
             "toolNames": [tool_name[t] for t in tools],
             "primaryTool": primary,
@@ -1152,6 +1241,7 @@ def main() -> None:
 
     revision_groups = build_revision_groups(videos)
     lecture_summaries = build_lecture_summaries(videos)
+    transcript_quality = build_transcript_quality(videos)
 
     DATA.mkdir(parents=True, exist_ok=True)
     payload = {
@@ -1165,6 +1255,7 @@ def main() -> None:
         "useCases": use_summaries,
         "videos": videos,
         "revisionGroups": revision_groups,
+        "transcriptQuality": transcript_quality,
         **lecture_summaries,
         "seminarAngles": [
             {

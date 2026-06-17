@@ -1,6 +1,6 @@
 const state = {
   data: null,
-  tab: "videos",
+  tab: "overview",
   query: "",
   tool: "",
   useCase: "",
@@ -128,6 +128,7 @@ function initElements() {
     angleList: $("#angleList"),
     activeSummary: $("#activeSummary"),
     selectedTags: $("#selectedTags"),
+    overviewPanel: $("#overviewPanel"),
     resultCount: $("#resultCount"),
     videoList: $("#videoList"),
     lectureCount: $("#lectureCount"),
@@ -223,6 +224,7 @@ function renderStatic() {
   renderAngleFilters();
   renderToolFilters();
   renderUseCaseFilters();
+  renderOverview();
   renderTools();
   renderLatest();
   renderQuality();
@@ -440,6 +442,124 @@ function renderVideos() {
 
   els.videoList.querySelectorAll("[data-detail-id]").forEach((button) => {
     button.addEventListener("click", () => openDetail(button.dataset.detailId));
+  });
+}
+
+function renderOverview() {
+  const data = state.data;
+  const quality = data.transcriptQuality || {};
+  const topModules = data.lectureModules
+    .slice(0, 8)
+    .map(
+      (module) => `
+        <article class="overview-item">
+          <div>
+            <h4>${escapeHtml(module.name)}</h4>
+            <p>${escapeHtml((module.topTools || []).map((tool) => `${tool.name} ${tool.count}本`).join(" / "))}</p>
+          </div>
+          <strong>${module.videoCount}本 <span>${module.ratio}%</span></strong>
+        </article>
+      `,
+    )
+    .join("");
+  const topTools = data.tools
+    .slice(0, 10)
+    .map(
+      (tool) => `
+        <button class="overview-tool" data-set-tool="${tool.id}">
+          <span>${escapeHtml(tool.name)}</span>
+          <strong>${tool.videoCount}本</strong>
+        </button>
+      `,
+    )
+    .join("");
+  const sourceText = (quality.sourceCounts || [])
+    .map((source) => `${source.name}: ${source.count}本`)
+    .join(" / ");
+  const lengthRows = (quality.lengthBuckets || [])
+    .map(
+      (bucket) => `
+        <div class="ratio-row">
+          <span>${escapeHtml(bucket.name)}</span>
+          <strong>${bucket.count}本</strong>
+        </div>
+      `,
+    )
+    .join("");
+  const featureRows = (data.featureCatalog || [])
+    .slice(0, 8)
+    .map(
+      (item) => `
+        <li>
+          <span>${escapeHtml(item.name)}</span>
+          <strong>${item.count}本</strong>
+        </li>
+      `,
+    )
+    .join("");
+  const shortVideos = (quality.shortVideos || [])
+    .slice(0, 5)
+    .map(
+      (video) => `
+        <a class="mini-video" href="${video.url}" target="_blank" rel="noreferrer">
+          ${escapeHtml(video.date)} ${video.transcriptChars.toLocaleString()}字 ${escapeHtml(compact(video.title, 78))}
+        </a>
+      `,
+    )
+    .join("");
+
+  els.overviewPanel.innerHTML = `
+    <section class="overview-hero">
+      <div>
+        <p class="eyebrow">Channel map</p>
+        <h3>560本から、Google Workspace講義に使える論点を横断整理</h3>
+        <p>動画本文・講義候補・機能候補・成果物候補を同じ検索対象にしているため、ツール名だけでなく「在庫管理」「議事録」「権限」「内製化」のような業務テーマでも探せます。</p>
+      </div>
+      <div class="overview-score">
+        <strong>${quality.withTranscript || data.videos.length}</strong>
+        <span>文字起こしあり / ${data.videos.length}本</span>
+      </div>
+    </section>
+
+    <section class="overview-grid">
+      ${stat("講義モジュール", `${data.lectureModules.length}分類`, "全動画を講義テーマで整理")}
+      ${stat("機能カタログ", `${(data.featureCatalog || []).length}項目`, "扱える機能・操作を抽出")}
+      ${stat("平均文字数", `${(quality.avgChars || 0).toLocaleString()}字`, `中央値 ${(quality.medianChars || 0).toLocaleString()}字`)}
+      ${stat("字幕ソース", sourceText || "unknown", "YouTube字幕由来")}
+    </section>
+
+    <section class="overview-columns">
+      <article class="overview-card">
+        <h3>多い講義テーマ</h3>
+        <div class="overview-list">${topModules}</div>
+      </article>
+      <article class="overview-card">
+        <h3>主なツール分類</h3>
+        <div class="overview-tool-list">${topTools}</div>
+      </article>
+    </section>
+
+    <section class="overview-columns">
+      <article class="overview-card">
+        <h3>よく出る機能・論点</h3>
+        <ul class="feature-rank">${featureRows}</ul>
+      </article>
+      <article class="overview-card">
+        <h3>文字起こし品質</h3>
+        <p class="quality-note">${escapeHtml(quality.note || "")}</p>
+        <div class="ratio-table">${lengthRows}</div>
+        <div class="mini-video-list">${shortVideos}</div>
+      </article>
+    </section>
+  `;
+
+  els.overviewPanel.querySelectorAll("[data-set-tool]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.tool = button.dataset.setTool;
+      state.visibleLimit = 80;
+      switchTab("videos");
+      render();
+    });
   });
 }
 
@@ -763,31 +883,84 @@ function renderLatest() {
 
 function renderQuality() {
   const videos = state.data.videos;
-  const short = videos.filter((video) => video.transcriptChars < 800).sort((a, b) => a.transcriptChars - b.transcriptChars);
-  const full = videos.filter((video) => video.transcriptChars > 0);
-  const avg = Math.round(full.reduce((sum, video) => sum + video.transcriptChars, 0) / full.length);
+  const quality = state.data.transcriptQuality || {};
+  const short = quality.shortVideos || videos.filter((video) => video.transcriptChars < 800).sort((a, b) => a.transcriptChars - b.transcriptChars);
+  const lowDensity = quality.lowDensityVideos || [];
   const latest = videos[0];
   const oldest = videos[videos.length - 1];
+  const lengthBuckets = (quality.lengthBuckets || [])
+    .map(
+      (bucket) => `
+        <div class="ratio-row">
+          <span>${escapeHtml(bucket.name)}</span>
+          <strong>${bucket.count}本</strong>
+        </div>
+      `,
+    )
+    .join("");
+  const densityBuckets = (quality.densityBuckets || [])
+    .map(
+      (bucket) => `
+        <div class="ratio-row">
+          <span>${escapeHtml(bucket.name)}</span>
+          <strong>${bucket.count}本</strong>
+        </div>
+      `,
+    )
+    .join("");
   const shortList = short
+    .filter((video) => video.transcriptChars < 2000)
     .map(
       (video) => `
       <article class="quality-card">
-        <div class="video-meta"><span>${escapeHtml(video.date)}</span><span>${video.transcriptChars}字</span><span>${escapeHtml(video.id)}</span></div>
+        <div class="video-meta"><span>${escapeHtml(video.date)}</span><span>${video.transcriptChars.toLocaleString()}字</span><span>${video.charsPerMinute || "-"}字/分</span><span>${escapeHtml(video.id)}</span></div>
         <a class="video-title-link" href="${video.url}" target="_blank" rel="noreferrer">${escapeHtml(video.title)}</a>
       </article>
     `,
     )
     .join("");
+  const lowDensityList = lowDensity
+    .map(
+      (video) => `
+      <article class="quality-card">
+        <div class="video-meta"><span>${escapeHtml(video.date)}</span><span>${video.transcriptChars.toLocaleString()}字</span><span>${video.charsPerMinute || "-"}字/分</span><span>${escapeHtml(video.duration || "")}</span></div>
+        <a class="video-title-link" href="${video.url}" target="_blank" rel="noreferrer">${escapeHtml(video.title)}</a>
+      </article>
+    `,
+    )
+    .join("");
+  const sourceCounts = (quality.sourceCounts || [])
+    .map((source) => `${source.name}: ${source.count}本`)
+    .join(" / ");
 
   els.qualityPanel.innerHTML = `
     <div class="quality-grid">
       ${stat("対象動画", `${videos.length}本`, `${oldest.date} - ${latest.date}`)}
-      ${stat("文字起こしあり", `${full.length}本`, "全件テキスト化済み")}
-      ${stat("平均文字数", `${avg.toLocaleString()}字`, "本文ベース")}
-      ${stat("短文要確認", `${short.length}本`, "800字未満")}
+      ${stat("文字起こしあり", `${quality.withTranscript || videos.length}本`, sourceCounts || "字幕由来")}
+      ${stat("平均文字数", `${(quality.avgChars || 0).toLocaleString()}字`, `中央値 ${(quality.medianChars || 0).toLocaleString()}字`)}
+      ${stat("平均密度", `${quality.avgCharsPerMinute || 0}字/分`, "動画時間あたり")}
     </div>
-    <p class="quality-note">短いものは告知動画・プレゼント動画などで、セミナー教材としては優先度が低い可能性があります。</p>
-    <div class="short-list">${shortList || `<div class="empty">短い文字起こしはありません。</div>`}</div>
+    <p class="quality-note">${escapeHtml(quality.note || "文字起こし品質を確認します。")} 短いものは告知動画・プレゼント動画などで、セミナー教材としては優先度が低い可能性があります。</p>
+    <div class="quality-columns">
+      <article class="overview-card">
+        <h3>文字数分布</h3>
+        <div class="ratio-table">${lengthBuckets}</div>
+      </article>
+      <article class="overview-card">
+        <h3>文字密度分布</h3>
+        <div class="ratio-table">${densityBuckets}</div>
+      </article>
+    </div>
+    <div class="quality-columns">
+      <article>
+        <h3>短文・告知寄り候補</h3>
+        <div class="short-list">${shortList || `<div class="empty">2,000字未満の文字起こしはありません。</div>`}</div>
+      </article>
+      <article>
+        <h3>文字密度が低い候補</h3>
+        <div class="short-list">${lowDensityList || `<div class="empty">低密度候補はありません。</div>`}</div>
+      </article>
+    </div>
   `;
 }
 
@@ -805,6 +978,8 @@ function openDetail(videoId) {
             <span>${escapeHtml(video.date)}</span>
             <span>${escapeHtml(video.duration || "")}</span>
             <span>${video.transcriptChars.toLocaleString()}字</span>
+            <span>${video.charsPerMinute || "-"}字/分</span>
+            <span>${escapeHtml(video.transcriptSource || "unknown")}</span>
             <span>${escapeHtml(video.id)}</span>
           </div>
           <h3>${escapeHtml(video.title)}</h3>
