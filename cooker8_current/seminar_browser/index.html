@@ -37,7 +37,7 @@
             <span>最新版候補だけ</span>
           </label>
           <label class="check-row">
-            <input id="hideShort" type="checkbox" checked />
+            <input id="hideShort" type="checkbox" />
             <span>短い文字起こしを除外</span>
           </label>
         </section>
@@ -67,6 +67,7 @@
           <div class="top-actions">
             <a id="channelLink" class="button ghost" href="https://www.youtube.com/@cooker8/videos" target="_blank" rel="noreferrer">YouTube</a>
             <a class="button ghost" href="./docs/tool_index.md" target="_blank" rel="noreferrer">整理MD</a>
+            <a class="button ghost" href="./docs/lecture_candidates.md" target="_blank" rel="noreferrer">講義候補MD</a>
             <button id="resetButton" class="button">条件クリア</button>
           </div>
         </header>
@@ -75,6 +76,8 @@
 
         <nav class="tabs" aria-label="表示切替">
           <button class="tab active" data-tab="videos">動画検索</button>
+          <button class="tab" data-tab="lectures">講義候補</button>
+          <button class="tab" data-tab="catalog">機能カタログ</button>
           <button class="tab" data-tab="tools">ツール別整理</button>
           <button class="tab" data-tab="latest">最新版優先</button>
           <button class="tab" data-tab="quality">品質確認</button>
@@ -91,6 +94,28 @@
             <div id="selectedTags" class="selected-tags"></div>
           </div>
           <div id="videoList" class="video-list"></div>
+        </section>
+
+        <section id="lecturesView" class="view">
+          <div class="results-head">
+            <div>
+              <h3>講義候補一覧</h3>
+              <p id="lectureCount"></p>
+            </div>
+            <div id="lectureTags" class="selected-tags"></div>
+          </div>
+          <div id="lectureStats" class="lecture-stats"></div>
+          <div id="lectureList" class="lecture-list"></div>
+        </section>
+
+        <section id="catalogView" class="view">
+          <div class="results-head">
+            <div>
+              <h3>機能カタログ</h3>
+              <p id="catalogCount"></p>
+            </div>
+          </div>
+          <div id="catalogPanel" class="catalog-list"></div>
         </section>
 
         <section id="toolsView" class="view">

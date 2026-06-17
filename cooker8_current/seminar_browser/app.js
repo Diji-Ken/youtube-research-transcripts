@@ -7,7 +7,7 @@ const state = {
   year: "",
   angle: "",
   latestOnly: false,
-  hideShort: true,
+  hideShort: false,
   sort: "date",
   visibleLimit: 80,
 };
@@ -47,6 +47,24 @@ function queryTokens() {
     .filter(Boolean);
 }
 
+function lectureText(video) {
+  const lecture = video.lecture || {};
+  return [
+    lecture.title,
+    lecture.module?.name,
+    lecture.type,
+    lecture.difficulty,
+    lecture.audience,
+    lecture.recommendedUse,
+    ...(lecture.outcomes || []),
+    ...(lecture.deliverables || []),
+    ...(lecture.features || []),
+    ...(lecture.procedure || []),
+    ...(lecture.casePoints || []),
+    ...(lecture.nonToolPoints || []),
+  ].join(" ");
+}
+
 function highlight(text, tokens = queryTokens()) {
   let safe = escapeHtml(text);
   if (!tokens.length) return safe;
@@ -61,10 +79,12 @@ function scoreVideo(video, tokens) {
   const summary = video.summary.toLowerCase();
   const toolNames = video.toolNames.join(" ").toLowerCase();
   const useNames = video.useCaseNames.join(" ").toLowerCase();
+  const lecture = lectureText(video).toLowerCase();
   const search = video.searchText.toLowerCase();
   let score = 0;
   for (const token of tokens) {
     if (title.includes(token)) score += 90;
+    if (lecture.includes(token)) score += 42;
     if (summary.includes(token)) score += 30;
     if (toolNames.includes(token)) score += 25;
     if (useNames.includes(token)) score += 18;
@@ -81,6 +101,7 @@ function videoHasAllTokens(video, tokens) {
     video.summary,
     video.toolNames.join(" "),
     video.useCaseNames.join(" "),
+    lectureText(video),
     video.searchText,
   ]
     .join(" ")
@@ -109,6 +130,12 @@ function initElements() {
     selectedTags: $("#selectedTags"),
     resultCount: $("#resultCount"),
     videoList: $("#videoList"),
+    lectureCount: $("#lectureCount"),
+    lectureTags: $("#lectureTags"),
+    lectureStats: $("#lectureStats"),
+    lectureList: $("#lectureList"),
+    catalogCount: $("#catalogCount"),
+    catalogPanel: $("#catalogPanel"),
     toolCards: $("#toolCards"),
     revisionGroups: $("#revisionGroups"),
     qualityPanel: $("#qualityPanel"),
@@ -299,14 +326,14 @@ function resetFilters() {
     year: "",
     angle: "",
     latestOnly: false,
-    hideShort: true,
+    hideShort: false,
     sort: "date",
     visibleLimit: 80,
   });
   els.searchInput.value = "";
   els.yearSelect.value = "";
   els.latestOnly.checked = false;
-  els.hideShort.checked = true;
+  els.hideShort.checked = false;
   els.sortSelect.value = "date";
   render();
 }
@@ -354,6 +381,8 @@ function render() {
   renderActiveSummary();
   renderSelectedTags();
   renderVideos();
+  renderLectures();
+  renderCatalog();
 }
 
 function renderActiveSummary() {
@@ -412,6 +441,186 @@ function renderVideos() {
   els.videoList.querySelectorAll("[data-detail-id]").forEach((button) => {
     button.addEventListener("click", () => openDetail(button.dataset.detailId));
   });
+}
+
+function countBy(rows, getter) {
+  const counter = new Map();
+  rows.forEach((row) => {
+    const key = getter(row);
+    if (!key) return;
+    counter.set(key, (counter.get(key) || 0) + 1);
+  });
+  return [...counter.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "ja"));
+}
+
+function lectureStat(title, entries, total) {
+  const rows = entries
+    .slice(0, 8)
+    .map(([name, count]) => {
+      const ratio = total ? Math.round((count / total) * 1000) / 10 : 0;
+      return `
+        <div class="ratio-row">
+          <span>${escapeHtml(name)}</span>
+          <strong>${count}本 / ${ratio}%</strong>
+        </div>
+      `;
+    })
+    .join("");
+  return `
+    <article class="lecture-stat-card">
+      <h4>${escapeHtml(title)}</h4>
+      ${rows || `<div class="small">該当なし</div>`}
+    </article>
+  `;
+}
+
+function renderList(items, emptyText = "該当なし") {
+  if (!items || !items.length) return `<div class="empty-inline">${escapeHtml(emptyText)}</div>`;
+  return `<ul class="bullet-list">${items.map((item) => `<li>${highlight(item)}</li>`).join("")}</ul>`;
+}
+
+function renderLectures() {
+  if (!state.data) return;
+  const rows = filteredVideos();
+  els.lectureCount.textContent = `${rows.length}件 / 全${state.data.videos.length}本`;
+  els.lectureTags.innerHTML = els.selectedTags.innerHTML;
+
+  els.lectureStats.innerHTML = [
+    lectureStat("講義モジュール比率", countBy(rows, (video) => video.lecture?.module?.name), rows.length),
+    lectureStat("講義タイプ比率", countBy(rows, (video) => video.lecture?.type), rows.length),
+    lectureStat("対象者比率", countBy(rows, (video) => video.lecture?.audience), rows.length),
+  ].join("");
+
+  const visible = rows.slice(0, state.visibleLimit);
+  els.lectureList.innerHTML = visible.map(lectureCard).join("");
+
+  if (!rows.length) {
+    els.lectureList.innerHTML = `<div class="empty">条件に合う講義候補がありません。</div>`;
+    return;
+  }
+  if (rows.length > state.visibleLimit) {
+    const button = document.createElement("button");
+    button.className = "button ghost";
+    button.textContent = `さらに表示 (${rows.length - state.visibleLimit}件)`;
+    button.addEventListener("click", () => {
+      state.visibleLimit += 80;
+      render();
+    });
+    els.lectureList.appendChild(button);
+  }
+  els.lectureList.querySelectorAll("[data-detail-id]").forEach((button) => {
+    button.addEventListener("click", () => openDetail(button.dataset.detailId));
+  });
+}
+
+function lectureCard(video) {
+  const lecture = video.lecture || {};
+  const tags = [
+    `<span class="tag tool">${escapeHtml(video.primaryToolName)}</span>`,
+    `<span class="tag">${escapeHtml(lecture.module?.name || "")}</span>`,
+    `<span class="tag use">${escapeHtml(lecture.type || "")}</span>`,
+    `<span class="tag">${escapeHtml(lecture.difficulty || "")}</span>`,
+  ];
+  return `
+    <article class="lecture-card">
+      <div class="lecture-card-head">
+        <div>
+          <div class="video-meta">
+            <span>${escapeHtml(video.date)}</span>
+            <span>${video.transcriptChars.toLocaleString()}字</span>
+            <span>${escapeHtml(lecture.recommendedUse || "")}</span>
+          </div>
+          <h4>${highlight(lecture.title || video.title)}</h4>
+          <a class="video-title-link source-title" href="${video.url}" target="_blank" rel="noreferrer">${highlight(video.title)}</a>
+        </div>
+        <button class="detail-button" data-detail-id="${video.id}">動画詳細</button>
+      </div>
+      <div class="tag-row">${tags.join("")}</div>
+      <div class="lecture-grid">
+        <section>
+          <h5>作る/見せる成果物</h5>
+          ${renderList(lecture.deliverables)}
+        </section>
+        <section>
+          <h5>扱う機能・操作</h5>
+          ${renderList(lecture.features)}
+        </section>
+        <section>
+          <h5>進め方</h5>
+          ${renderList(lecture.procedure)}
+        </section>
+        <section>
+          <h5>事例・ツール外論点</h5>
+          ${renderList([...(lecture.casePoints || []), ...(lecture.nonToolPoints || [])], "補足論点なし")}
+        </section>
+      </div>
+    </article>
+  `;
+}
+
+function buildFeatureRows(rows) {
+  const map = new Map();
+  rows.forEach((video) => {
+    (video.lecture?.features || []).forEach((feature) => {
+      if (!map.has(feature)) {
+        map.set(feature, { name: feature, count: 0, tools: new Map(), videos: [] });
+      }
+      const item = map.get(feature);
+      item.count += 1;
+      item.tools.set(video.primaryToolName, (item.tools.get(video.primaryToolName) || 0) + 1);
+      if (item.videos.length < 8) item.videos.push(video);
+    });
+  });
+  return [...map.values()]
+    .map((item) => ({
+      ...item,
+      tools: [...item.tools.entries()].sort((a, b) => b[1] - a[1]),
+    }))
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name, "ja"));
+}
+
+function renderCatalog() {
+  if (!state.data) return;
+  const videos = filteredVideos();
+  const rows = buildFeatureRows(videos);
+  els.catalogCount.textContent = `${rows.length}項目 / 対象${videos.length}本`;
+  if (!rows.length) {
+    els.catalogPanel.innerHTML = `<div class="empty">条件に合う機能項目がありません。</div>`;
+    return;
+  }
+  els.catalogPanel.innerHTML = rows.map((item) => catalogCard(item, videos.length)).join("");
+  els.catalogPanel.querySelectorAll("[data-detail-id]").forEach((button) => {
+    button.addEventListener("click", () => openDetail(button.dataset.detailId));
+  });
+}
+
+function catalogCard(item, total) {
+  const ratio = total ? Math.round((item.count / total) * 1000) / 10 : 0;
+  const tools = item.tools
+    .slice(0, 5)
+    .map(([name, count]) => `<span class="tag tool">${escapeHtml(name)} ${count}</span>`)
+    .join("");
+  const videos = item.videos
+    .map(
+      (video) => `
+        <li>
+          <button class="text-button" data-detail-id="${video.id}">${escapeHtml(video.date)} ${escapeHtml(compact(video.title, 86))}</button>
+        </li>
+      `,
+    )
+    .join("");
+  return `
+    <article class="catalog-card">
+      <div class="catalog-card-head">
+        <div>
+          <h4>${highlight(item.name)}</h4>
+          <div class="tag-row">${tools}</div>
+        </div>
+        <div class="tool-count">${item.count}<span>本</span><small>${ratio}%</small></div>
+      </div>
+      <ul class="older-list">${videos}</ul>
+    </article>
+  `;
 }
 
 function videoCard(video) {
@@ -585,6 +794,7 @@ function renderQuality() {
 function openDetail(videoId) {
   const video = state.data.videos.find((item) => item.id === videoId);
   if (!video) return;
+  const lecture = video.lecture || {};
   const relatedTools = video.toolNames.map((name) => `<span class="tag tool">${escapeHtml(name)}</span>`).join("");
   const useCases = video.useCaseNames.map((name) => `<span class="tag use">${escapeHtml(name)}</span>`).join("");
   els.detailContent.innerHTML = `
@@ -605,6 +815,34 @@ function openDetail(videoId) {
         <div>
           <p class="video-summary">${escapeHtml(video.summary)}</p>
           <div class="tag-row">${relatedTools}${useCases}${latestIds.has(video.id) ? `<span class="tag">最新版候補</span>` : ""}</div>
+          <section class="detail-lecture">
+            <div class="section-title">講義候補</div>
+            <h4>${escapeHtml(lecture.title || "")}</h4>
+            <div class="tag-row">
+              <span class="tag">${escapeHtml(lecture.module?.name || "")}</span>
+              <span class="tag use">${escapeHtml(lecture.type || "")}</span>
+              <span class="tag">${escapeHtml(lecture.difficulty || "")}</span>
+              <span class="tag">${escapeHtml(lecture.audience || "")}</span>
+            </div>
+            <div class="detail-lecture-grid">
+              <div>
+                <h5>成果物</h5>
+                ${renderList(lecture.deliverables)}
+              </div>
+              <div>
+                <h5>機能・操作</h5>
+                ${renderList(lecture.features)}
+              </div>
+              <div>
+                <h5>進め方</h5>
+                ${renderList(lecture.procedure)}
+              </div>
+              <div>
+                <h5>注意点/事例</h5>
+                ${renderList([...(lecture.casePoints || []), ...(lecture.nonToolPoints || [])], "補足論点なし")}
+              </div>
+            </div>
+          </section>
           <div class="snippet-list">${renderSnippets(video)}</div>
           <h4>文字起こしプレビュー</h4>
           <div class="transcript-preview">${highlight(video.searchText)}</div>
