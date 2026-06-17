@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>cooker8 Google Workspace Seminar Browser</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <p class="eyebrow">cooker8 transcripts</p>
+          <h1>GWSセミナー素材ブラウザ</h1>
+          <p id="generatedMeta" class="meta">データ読み込み中</p>
+        </div>
+
+        <section class="filter-section">
+          <div class="section-title">検索</div>
+          <label class="search-box">
+            <span>キーワード</span>
+            <input id="searchInput" type="search" placeholder="例: AppSheet 議事録 Gemini" autocomplete="off" />
+          </label>
+          <div class="control-row">
+            <select id="sortSelect" aria-label="並び順">
+              <option value="date">新しい順</option>
+              <option value="relevance">関連度順</option>
+              <option value="length">文字起こし量順</option>
+            </select>
+            <select id="yearSelect" aria-label="年で絞り込み">
+              <option value="">全年</option>
+            </select>
+          </div>
+          <label class="check-row">
+            <input id="latestOnly" type="checkbox" />
+            <span>最新版候補だけ</span>
+          </label>
+          <label class="check-row">
+            <input id="hideShort" type="checkbox" />
+            <span>短い文字起こしを除外</span>
+          </label>
+        </section>
+
+        <section class="filter-section">
+          <div class="section-title">セミナー切り口</div>
+          <div id="angleList" class="angle-list"></div>
+        </section>
+
+        <section class="filter-section">
+          <div class="section-title">ツール</div>
+          <div id="toolFilter" class="filter-list"></div>
+        </section>
+
+        <section class="filter-section">
+          <div class="section-title">用途</div>
+          <div id="useCaseFilter" class="filter-list"></div>
+        </section>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Google Workspace / JWS seminar research</p>
+            <h2>560本の文字起こしから、セミナーで使う動画を探す</h2>
+          </div>
+          <div class="top-actions">
+            <a id="channelLink" class="button ghost" href="https://www.youtube.com/@cooker8/videos" target="_blank" rel="noreferrer">YouTube</a>
+            <a class="button ghost" href="./docs/tool_index.md" target="_blank" rel="noreferrer">整理MD</a>
+            <a class="button ghost" href="./docs/lecture_candidates.md" target="_blank" rel="noreferrer">講義候補MD</a>
+            <button id="resetButton" class="button">条件クリア</button>
+          </div>
+        </header>
+
+        <section id="stats" class="stats-grid" aria-label="集計"></section>
+
+        <nav class="tabs" aria-label="表示切替">
+          <button class="tab active" data-tab="overview">全体マップ</button>
+          <button class="tab" data-tab="videos">動画検索</button>
+          <button class="tab" data-tab="lectures">講義候補</button>
+          <button class="tab" data-tab="catalog">機能カタログ</button>
+          <button class="tab" data-tab="review">精査状況</button>
+          <button class="tab" data-tab="tools">ツール別整理</button>
+          <button class="tab" data-tab="latest">最新版優先</button>
+          <button class="tab" data-tab="quality">品質確認</button>
+        </nav>
+
+        <section id="activeSummary" class="active-summary"></section>
+
+        <section id="overviewView" class="view active">
+          <div id="overviewPanel" class="overview-panel"></div>
+        </section>
+
+        <section id="videosView" class="view">
+          <div class="results-head">
+            <div>
+              <h3>動画一覧</h3>
+              <p id="resultCount"></p>
+            </div>
+            <div id="selectedTags" class="selected-tags"></div>
+          </div>
+          <div id="videoList" class="video-list"></div>
+        </section>
+
+        <section id="lecturesView" class="view">
+          <div class="results-head">
+            <div>
+              <h3>講義候補一覧</h3>
+              <p id="lectureCount"></p>
+            </div>
+            <div id="lectureTags" class="selected-tags"></div>
+          </div>
+          <div id="lectureStats" class="lecture-stats"></div>
+          <div id="lectureList" class="lecture-list"></div>
+        </section>
+
+        <section id="catalogView" class="view">
+          <div class="results-head">
+            <div>
+              <h3>機能カタログ</h3>
+              <p id="catalogCount"></p>
+            </div>
+          </div>
+          <div id="catalogPanel" class="catalog-list"></div>
+        </section>
+
+        <section id="reviewView" class="view">
+          <div class="results-head">
+            <div>
+              <h3>精査状況</h3>
+              <p id="reviewCount"></p>
+            </div>
+          </div>
+          <div id="reviewPanel" class="review-panel"></div>
+        </section>
+
+        <section id="toolsView" class="view">
+          <div class="results-head">
+            <div>
+              <h3>ツール別整理</h3>
+              <p>各ツールで「何ができるか」と代表動画を確認できます。</p>
+            </div>
+          </div>
+          <div id="toolCards" class="tool-grid"></div>
+        </section>
+
+        <section id="latestView" class="view">
+          <div class="results-head">
+            <div>
+              <h3>最新版優先</h3>
+              <p>同じテーマで複数年にわたる動画は、最新投稿を主教材候補として扱います。</p>
+            </div>
+          </div>
+          <div id="revisionGroups" class="revision-list"></div>
+        </section>
+
+        <section id="qualityView" class="view">
+          <div class="results-head">
+            <div>
+              <h3>文字起こし品質</h3>
+              <p>全動画の文字起こし有無と、短すぎる文字起こしを確認します。</p>
+            </div>
+          </div>
+          <div id="qualityPanel" class="quality-panel"></div>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="detailDialog" class="detail-dialog">
+      <div id="detailContent"></div>
+    </dialog>
+
+    <div id="loadError" class="load-error" hidden>
+      <strong>データを読み込めませんでした。</strong>
+      <span>このファイルはHTTPサーバーかGitHub Pages上で開いてください。</span>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
